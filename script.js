@@ -11,6 +11,8 @@ const projects={
   buryatia:{title:'Изобразительное искусство',category:'ART BOOK',descRu:'Художественный альбом с большим количеством произведений и биографических материалов. Верстка построена вокруг крупных репродукций и спокойной типографики.',descEn:'An art book built around large reproductions, artist biographies and a restrained typographic system.',images:['buryatia-1.webp','buryatia-2.webp']}
 };
 const order=['rock','tatprom','transneft','garuss','woex','transingstroy','aviation','buryatia'];
+const spriteClass={rock:'sprite-rock',tatprom:'sprite-tatprom',transneft:'sprite-transneft',garuss:'sprite-garuss',woex:'sprite-woex',transingstroy:'sprite-transingstroy',aviation:'sprite-aviation',buryatia:'sprite-buryatia'};
+
 let lang='ru',currentProject='rock';
 
 const translations={
@@ -82,7 +84,7 @@ const dialog=document.getElementById('projectDialog'),dTitle=document.getElement
 function fillDialog(id){
   currentProject=id;const p=projects[id];if(!p)return;
   dTitle.textContent=p.title;dCat.textContent=p.category;dDesc.textContent=lang==='ru'?p.descRu:p.descEn;
-  dGallery.innerHTML=p.images.map((img,i)=>`<img ${i?'loading="lazy"':''} src="assets/gallery/${img}" alt="${p.title} — ${i+1}">`).join('');
+  dGallery.innerHTML=`<div class="dialog-cover"><span class="sprite ${spriteClass[id]}" role="img" aria-label="${p.title}"></span></div>`;
 }
 function openProject(id){fillDialog(id);dialog.showModal();document.body.style.overflow='hidden'}
 function closeDialog(){dialog.close();document.body.style.overflow=''}
