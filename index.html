@@ -12,205 +12,24 @@
 </head>
 <body>
   <div class="page-wipe" aria-hidden="true"><i></i><b></b></div>
-
-  <header class="topbar">
-    <a class="brand" href="#hero" aria-label="Kurbatov.site — на главную">AK</a>
-    <nav aria-label="Основная навигация">
-      <a href="#works" data-i18n="navWorks">РАБОТЫ</a>
-      <a href="#about" data-i18n="navAbout">ОБО МНЕ</a>
-      <a href="#contact" data-i18n="navContact">КОНТАКТ</a>
-    </nav>
-    <div class="lang" role="group" aria-label="Язык">
-      <button class="lang-btn is-active" type="button" data-lang="ru">RU</button>
-      <span>/</span>
-      <button class="lang-btn" type="button" data-lang="en">EN</button>
-    </div>
-  </header>
-
+  <header class="topbar"><a class="brand" href="#hero">AK</a><nav><a href="#works">РАБОТЫ</a><a href="#about">ОБО МНЕ</a><a href="#contact">КОНТАКТ</a></nav><div class="lang"><button class="lang-btn is-active" data-lang="ru">RU</button><span>/</span><button class="lang-btn" data-lang="en">EN</button></div></header>
   <main>
     <section id="hero" class="theme-section theme-light hero" data-theme="light">
       <div class="hero-inner">
-        <div class="hero-copy reveal">
-          <p class="hero-label">GRAPHIC DESIGNER / ART DIRECTOR</p>
-          <h1><span>ALEXANDR</span><span>KURBATOV</span></h1>
-          <p class="hero-sub" data-i18n="heroSub">Графический дизайн для реального мира.</p>
-          <p class="hero-note" data-i18n="heroNote">Брендинг, упаковка, полиграфия, editorial, презентации и специальные проекты — от идеи до производства.</p>
-          <a class="hero-link" href="#works"><span data-i18n="viewWorks">СМОТРЕТЬ РАБОТЫ</span><b>↘</b></a>
-        </div>
-
-        <div class="hero-visual reveal" aria-label="Портрет Александра Курбатова">
-          <div class="hero-plate plate-a" aria-hidden="true"></div>
-          <div class="hero-plate plate-b" aria-hidden="true"></div>
-          <div class="hero-line hero-line-a" aria-hidden="true"></div>
-          <div class="hero-line hero-line-b" aria-hidden="true"></div>
-          <div class="hero-mark mark-a" aria-hidden="true"></div>
-          <div class="hero-mark mark-b" aria-hidden="true"></div>
-          <div class="hero-photo" role="img" aria-label="Alexandr Kurbatov в белой толстовке"></div>
-          <div class="hero-sidecopy" aria-hidden="true">PRINT<br>PEOPLE<br>IDEAS<br>RESULTS</div>
-        </div>
-      </div>
-      <div class="hero-foot" aria-hidden="true">
-        <span>BRANDING</span><span>PRINT</span><span>PACKAGING</span><span>EDITORIAL</span><span>MERCH</span><span>ART DIRECTION</span>
-      </div>
+        <div class="hero-copy reveal"><p class="hero-label">GRAPHIC DESIGNER / ART DIRECTOR</p><h1><span>ALEXANDR</span><span>KURBATOV</span></h1><p class="hero-sub" data-i18n="heroSub">Графический дизайн для реального мира.</p><p class="hero-note" data-i18n="heroNote">Брендинг, упаковка, полиграфия, editorial, презентации и специальные проекты — от идеи до производства.</p><a class="hero-link" href="#works"><span data-i18n="viewWorks">СМОТРЕТЬ РАБОТЫ</span><b>↘</b></a></div>
+        <div class="hero-visual reveal" aria-label="Портрет Александра Курбатова"><div class="hero-plate plate-a"></div><div class="hero-plate plate-b"></div><div class="hero-line hero-line-a"></div><div class="hero-line hero-line-b"></div><div class="hero-mark mark-a"></div><div class="hero-mark mark-b"></div><div class="hero-photo" role="img" aria-label="Alexandr Kurbatov в белой толстовке"></div><canvas id="heroParticles" class="hero-particles" aria-hidden="true"></canvas><div class="hero-sidecopy" aria-hidden="true">PRINT<br>PEOPLE<br>IDEAS<br>RESULTS</div></div>
+      </div><div class="hero-foot"><span>BRANDING</span><span>PRINT</span><span>PACKAGING</span><span>EDITORIAL</span><span>MERCH</span><span>ART DIRECTION</span></div>
     </section>
-
-    <section id="works" class="theme-section theme-dark project-section project-feature" data-theme="dark" data-project="rock">
-      <div class="project-media project-color reveal" role="button" tabindex="0" aria-label="Открыть проект Rock Lives in Us">
-        <span class="sprite sprite-rock" role="img" aria-label="Rock Lives in Us — настенный календарь"></span>
-      </div>
-      <div class="project-caption reveal">
-        <div class="project-kicker">CALENDAR / PERSONAL PROJECT</div>
-        <h2>Rock Lives in Us</h2>
-        <p data-i18n="rockText">Минималистичный двухсторонний календарь о культовых музыкальных группах. В основе — чёрно-белая фотография, типографика и эстетика аналоговой музыкальной культуры.</p>
-      </div>
-    </section>
-
-    <section class="theme-section theme-light twin-projects" data-theme="light">
-      <article class="project-card reveal" data-project="tatprom">
-        <div class="project-media project-color" role="button" tabindex="0" aria-label="Открыть проект ТатПром Холдинг">
-          <span class="sprite sprite-tatprom" role="img" aria-label="ТатПром Холдинг — календарь 2026"></span>
-        </div>
-        <div class="project-caption compact">
-          <div class="project-kicker">CORPORATE CALENDAR</div>
-          <h2>ТатПром Холдинг</h2>
-          <p data-i18n="tatpromText">Календарь об истории нефтяной геологии и людях отрасли. Архивная эстетика соединена с современной графической системой и крупными иллюстративными образами.</p>
-        </div>
-      </article>
-
-      <article class="project-card project-card-small reveal" data-project="transneft">
-        <div class="project-media project-color" role="button" tabindex="0" aria-label="Открыть проект Транснефть — 9 Мая">
-          <span class="sprite sprite-transneft" role="img" aria-label="Транснефть — 9 Мая"></span>
-        </div>
-        <div class="project-caption compact">
-          <div class="project-kicker">PRINT / CORPORATE</div>
-          <h2>Транснефть — 9 Мая</h2>
-          <p data-i18n="transneftText">Серия поздравительных материалов ко Дню Победы. Архивные фотографии и исторические мотивы собраны в современной композиции без избыточной декоративности.</p>
-        </div>
-      </article>
-    </section>
-
-    <section class="theme-section theme-dark garuss-section" data-theme="dark">
-      <div class="sticky-copy reveal">
-        <div class="project-kicker">MERCH / IDENTITY</div>
-        <h2>GARUSS</h2>
-        <p data-i18n="garussText">Фирменный мерч на основе типографики, знака R и ограниченной палитры. Графика адаптирована под печать, вышивку и разные носители.</p>
-      </div>
-      <div class="garuss-media reveal" data-project="garuss">
-        <div class="project-media project-color" role="button" tabindex="0" aria-label="Открыть проект GARUSS">
-          <span class="sprite sprite-garuss" role="img" aria-label="GARUSS — merch collection"></span>
-        </div>
-        <div class="garuss-index" aria-hidden="true">MERCH / PRINT / IDENTITY</div>
-      </div>
-    </section>
-
-    <section class="theme-section theme-light product-pair" data-theme="light">
-      <article class="product-row reveal" data-project="woex">
-        <div class="project-caption compact">
-          <div class="project-kicker">PACKAGING / PRODUCT DESIGN</div>
-          <h2>WOEX</h2>
-          <p data-i18n="woexText">Модульная система упаковки для нескольких категорий бытовой техники. Задача — сохранить единый характер бренда и при этом визуально различать продуктовые линейки.</p>
-        </div>
-        <div class="project-media project-color" role="button" tabindex="0" aria-label="Открыть проект WOEX">
-          <span class="sprite sprite-woex" role="img" aria-label="WOEX — система упаковки"></span>
-        </div>
-      </article>
-
-      <article class="product-row product-row-alt reveal" data-project="transingstroy">
-        <div class="project-media project-color" role="button" tabindex="0" aria-label="Открыть проект Трансинжстрой">
-          <span class="sprite sprite-transingstroy" role="img" aria-label="Трансинжстрой — календарь"></span>
-        </div>
-        <div class="project-caption compact">
-          <div class="project-kicker">CALENDAR / PRINT</div>
-          <h2>Трансинжстрой</h2>
-          <p data-i18n="transingstroyText">Корпоративный календарь с архитектурно-инженерной пластикой и туннельной темой. Объёмное фольгирование поддерживает ощущение света, глубины и материала.</p>
-        </div>
-      </article>
-    </section>
-
-    <section class="theme-section theme-dark editorial-section" data-theme="dark">
-      <div class="editorial-intro reveal">
-        <span>EDITORIAL / BOOKS</span>
-        <p data-i18n="editorialIntro">Книги и альбомы — отдельное направление моей работы. Здесь важны ритм, типографика, структура материала и уважение к изображению.</p>
-      </div>
-
-      <article class="editorial-project reveal" data-project="aviation">
-        <div class="project-media project-color" role="button" tabindex="0" aria-label="Открыть юбилейное издание авиационного завода">
-          <span class="sprite sprite-aviation" role="img" aria-label="Улан-Удэнский авиационный завод — 80 лет"></span>
-        </div>
-        <div class="project-caption compact">
-          <div class="project-kicker">ANNIVERSARY BOOK</div>
-          <h2>80 лет авиационному заводу</h2>
-          <p data-i18n="aviationText">Юбилейное издание об истории завода. Обложка, архивные материалы, фотохроника и длинная редакционная структура собраны в единую систему.</p>
-        </div>
-      </article>
-
-      <article class="editorial-project editorial-project-alt reveal" data-project="buryatia">
-        <div class="project-caption compact">
-          <div class="project-kicker">ART BOOK</div>
-          <h2>Изобразительное искусство</h2>
-          <p data-i18n="buryatiaText">Художественный альбом с большим количеством произведений и биографических материалов. Верстка построена вокруг крупных репродукций и спокойной типографики.</p>
-        </div>
-        <div class="project-media project-color" role="button" tabindex="0" aria-label="Открыть художественный альбом">
-          <span class="sprite sprite-buryatia" role="img" aria-label="Изобразительное искусство Усть-Ордынского Бурятского округа"></span>
-        </div>
-      </article>
-    </section>
-
-    <section id="about" class="theme-section theme-light about-section" data-theme="light">
-      <div class="about-title reveal">
-        <span>20+</span>
-        <h2 data-i18n-html="aboutTitle">ЛЕТ<br>В ДИЗАЙНЕ</h2>
-      </div>
-      <div class="about-copy reveal">
-        <p data-i18n="aboutText">Я Александр Курбатов — графический дизайнер и арт-директор. Работаю с брендингом, полиграфией, упаковкой, презентациями, мерчем и корпоративными проектами — от идеи до готового продукта.</p>
-        <div class="disciplines" aria-label="Направления работы">
-          <span>BRANDING</span><span>PRINT</span><span>PACKAGING</span><span>EDITORIAL</span><span>PRESENTATIONS</span><span>MERCH</span><span>ART DIRECTION</span>
-        </div>
-      </div>
-    </section>
-
-    <section class="theme-section theme-dark process-section" data-theme="dark">
-      <div class="process-line" aria-label="Процесс работы">
-        <span>IDEA</span><b>→</b><span>SYSTEM</span><b>→</b><span>DESIGN</span><b>→</b><span>PRODUCTION</span>
-      </div>
-      <p data-i18n="processText">От идеи и визуальной системы — до реального носителя и производства.</p>
-    </section>
-
-    <section id="contact" class="theme-section theme-light contact-section" data-theme="light">
-      <div class="contact-copy reveal">
-        <p class="contact-kicker">CONTACT</p>
-        <h2 data-i18n-html="contactTitle">ЕСТЬ ЗАДАЧА?<br><em>ДАВАЙТЕ ОБСУДИМ.</em></h2>
-        <p data-i18n="contactText">Открыт к проектной работе, арт-дирекшну и сотрудничеству.</p>
-        <div class="contact-links">
-          <a href="https://www.behance.net/kontora03" target="_blank" rel="noopener">BEHANCE ↗</a>
-          <a href="#hero">KURBATOV.SITE</a>
-        </div>
-      </div>
-      <div class="contact-portrait reveal" aria-label="Боковой портрет Александра Курбатова">
-        <div class="contact-rule" aria-hidden="true"></div>
-        <span class="sprite sprite-end" role="img" aria-label="Alexandr Kurbatov, боковой портрет"></span>
-      </div>
-    </section>
+    <section id="works" class="theme-section theme-dark project-section project-feature" data-theme="dark" data-project="rock"><div class="project-media project-color reveal"><span class="sprite sprite-rock"></span></div><div class="project-caption reveal"><div class="project-kicker">CALENDAR / PERSONAL PROJECT</div><h2>Rock Lives in Us</h2><p data-i18n="rockText">Минималистичный двухсторонний календарь о культовых музыкальных группах. В основе — чёрно-белая фотография, типографика и эстетика аналоговой музыкальной культуры.</p></div></section>
+    <section class="theme-section theme-light twin-projects" data-theme="light"><article class="project-card reveal" data-project="tatprom"><div class="project-media project-color"><span class="sprite sprite-tatprom"></span></div><div class="project-caption compact"><div class="project-kicker">CORPORATE CALENDAR</div><h2>ТатПром Холдинг</h2><p data-i18n="tatpromText">Календарь об истории нефтяной геологии и людях отрасли. Архивная эстетика соединена с современной графической системой и крупными иллюстративными образами.</p></div></article><article class="project-card project-card-small reveal" data-project="transneft"><div class="project-media project-color"><span class="sprite sprite-transneft"></span></div><div class="project-caption compact"><div class="project-kicker">PRINT / CORPORATE</div><h2>Транснефть — 9 Мая</h2><p data-i18n="transneftText">Серия поздравительных материалов ко Дню Победы. Архивные фотографии и исторические мотивы собраны в современной композиции без избыточной декоративности.</p></div></article></section>
+    <section class="theme-section theme-dark garuss-section" data-theme="dark"><div class="sticky-copy reveal"><div class="project-kicker">MERCH / IDENTITY</div><h2>GARUSS</h2><p data-i18n="garussText">Фирменный мерч на основе типографики, знака R и ограниченной палитры. Графика адаптирована под печать, вышивку и разные носители.</p></div><div class="garuss-media reveal" data-project="garuss"><div class="project-media project-color"><span class="sprite sprite-garuss"></span></div></div></section>
+    <section class="theme-section theme-light product-pair" data-theme="light"><article class="product-row reveal" data-project="woex"><div class="project-caption compact"><div class="project-kicker">PACKAGING / PRODUCT DESIGN</div><h2>WOEX</h2><p data-i18n="woexText">Модульная система упаковки для нескольких категорий бытовой техники.</p></div><div class="project-media project-color"><span class="sprite sprite-woex"></span></div></article><article class="product-row product-row-alt reveal" data-project="transingstroy"><div class="project-media project-color"><span class="sprite sprite-transingstroy"></span></div><div class="project-caption compact"><div class="project-kicker">CALENDAR / PRINT</div><h2>Трансинжстрой</h2><p data-i18n="transingstroyText">Корпоративный календарь с архитектурно-инженерной пластикой и туннельной темой.</p></div></article></section>
+    <section class="theme-section theme-dark editorial-section" data-theme="dark"><div class="editorial-intro reveal"><span>EDITORIAL / BOOKS</span><p data-i18n="editorialIntro">Книги и альбомы — отдельное направление моей работы.</p></div><article class="editorial-project reveal" data-project="aviation"><div class="project-media project-color"><span class="sprite sprite-aviation"></span></div><div class="project-caption compact"><div class="project-kicker">ANNIVERSARY BOOK</div><h2>80 лет авиационному заводу</h2><p data-i18n="aviationText">Юбилейное издание об истории завода.</p></div></article><article class="editorial-project editorial-project-alt reveal" data-project="buryatia"><div class="project-caption compact"><div class="project-kicker">ART BOOK</div><h2>Изобразительное искусство</h2><p data-i18n="buryatiaText">Художественный альбом с большим количеством произведений и биографических материалов.</p></div><div class="project-media project-color"><span class="sprite sprite-buryatia"></span></div></article></section>
+    <section id="about" class="theme-section theme-light about-section" data-theme="light"><div class="about-title reveal"><span>20+</span><h2 data-i18n-html="aboutTitle">ЛЕТ<br>В ДИЗАЙНЕ</h2></div><div class="about-copy reveal"><p data-i18n="aboutText">Я Александр Курбатов — графический дизайнер и арт-директор.</p><div class="disciplines"><span>BRANDING</span><span>PRINT</span><span>PACKAGING</span><span>EDITORIAL</span><span>PRESENTATIONS</span><span>MERCH</span><span>ART DIRECTION</span></div></div></section>
+    <section class="theme-section theme-dark process-section" data-theme="dark"><div class="process-line"><span>IDEA</span><b>→</b><span>SYSTEM</span><b>→</b><span>DESIGN</span><b>→</b><span>PRODUCTION</span></div><p data-i18n="processText">От идеи и визуальной системы — до реального носителя и производства.</p></section>
+    <section id="contact" class="theme-section theme-light contact-section" data-theme="light"><div class="contact-copy reveal"><p class="contact-kicker">CONTACT</p><h2 data-i18n-html="contactTitle">ЕСТЬ ЗАДАЧА?<br><em>ДАВАЙТЕ ОБСУДИМ.</em></h2><p data-i18n="contactText">Открыт к проектной работе, арт-дирекшну и сотрудничеству.</p><div class="contact-links"><a href="https://www.behance.net/kontora03" target="_blank" rel="noopener">BEHANCE ↗</a><a href="#hero">KURBATOV.SITE</a></div></div><div class="contact-portrait reveal"><span class="sprite sprite-end"></span></div></section>
   </main>
-
-  <footer>
-    <span>© 2026 Alexandr Kurbatov</span>
-    <span>GRAPHIC DESIGN / ART DIRECTION</span>
-  </footer>
-
-  <dialog id="projectDialog" class="project-dialog">
-    <button class="dialog-close" type="button" aria-label="Закрыть">×</button>
-    <div class="dialog-shell">
-      <div class="dialog-head">
-        <p id="dialogCategory"></p>
-        <h2 id="dialogTitle"></h2>
-        <p id="dialogDescription"></p>
-      </div>
-      <div id="dialogGallery" class="dialog-gallery"></div>
-      <button class="dialog-next" type="button"><span data-i18n="nextProject">СЛЕДУЮЩИЙ ПРОЕКТ</span> ↘</button>
-    </div>
-  </dialog>
-
+  <footer><span>© 2026 Alexandr Kurbatov</span><span>GRAPHIC DESIGN / ART DIRECTION</span></footer>
+  <dialog id="projectDialog" class="project-dialog"><button class="dialog-close">×</button><div class="dialog-shell"><div class="dialog-head"><p id="dialogCategory"></p><h2 id="dialogTitle"></h2><p id="dialogDescription"></p></div><div id="dialogGallery" class="dialog-gallery"></div><button class="dialog-next"><span data-i18n="nextProject">СЛЕДУЮЩИЙ ПРОЕКТ</span> ↘</button></div></dialog>
   <script src="script.js"></script>
-</body>
-</html>
+</body></html>
