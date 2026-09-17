@@ -63,6 +63,23 @@
   .editorial-project .project-caption,.editorial-project-alt .project-caption{order:2!important;padding:0!important;max-width:560px!important}
 }
 
+/* V10.3 — portrait and name work as one hero composition */
+@media(min-width:1051px){
+  .hero-inner{grid-template-columns:minmax(0,1.36fr) minmax(390px,.64fr)!important;gap:0!important;position:relative;overflow:visible}
+  .hero-copy{position:relative;z-index:2;overflow:visible}
+  .hero h1{position:relative;z-index:1;width:118%;max-width:none!important;font-size:clamp(70px,7.5vw,128px)!important;line-height:.79!important;letter-spacing:-.075em!important}
+  .hero h1 span{position:relative;display:block;white-space:nowrap}
+  .hero h1 span:first-child{z-index:4}
+  .hero h1 span:last-child{z-index:1;margin-top:.02em}
+  .hero-visual{z-index:3;width:min(39vw,600px)!important;margin-left:-13vw;overflow:visible}
+  .hero-photo{z-index:3!important;width:100%!important;height:97%!important;background-position:right bottom!important;filter:grayscale(1) contrast(1.04)!important;transform:translateX(-1.5vw)}
+  .hero-plate{z-index:-1!important}
+  .hero-label,.hero-sub,.hero-note,.hero-link{position:relative;z-index:5}
+  .hero-sub{max-width:470px}
+  .hero-note{max-width:430px}
+  .hero-sidecopy{z-index:5}
+}
+
 @media(max-width:1050px){
   .hero-photo{height:100%}.contact-portrait .sprite{width:180px;height:250px}
   .project-media,
