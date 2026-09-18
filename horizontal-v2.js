@@ -76,21 +76,16 @@ const firstScene=document.querySelector('.first-scene');
 const nextTease=firstScene?.querySelector('.next-tease');
 
 function updateRefinedDetails(){
-  if(innerWidth<=900){
-    if(introPhoto) introPhoto.style.transform='';
-    if(introNameA) introNameA.style.transform='';
-    if(introNameB) introNameB.style.transform='';
-    if(nextTease) nextTease.style.setProperty('--next','0');
-    return;
-  }
-
   if(refinedIntro){
     const h=Math.max(1,refinedIntro.offsetHeight);
-    const p=clamp(scrollY/h);
+    const p=clamp(scrollY/(h*.92));
     const e=p*(2-p);
-    if(introPhoto) introPhoto.style.transform=`translate3d(0,${(e*14).toFixed(1)}px,0)`;
-    if(introNameA) introNameA.style.transform=`translate3d(${(-e*18).toFixed(1)}px,0,0)`;
-    if(introNameB) introNameB.style.transform=`translate3d(${(e*24).toFixed(1)}px,0,0)`;
+    const mobile=innerWidth<=900;
+    const travelA=(mobile?innerWidth*.62:innerWidth*.26);
+    const travelB=(mobile?innerWidth*.72:innerWidth*.31);
+
+    if(introNameA) introNameA.style.setProperty('--hero-a',`${(-e*travelA).toFixed(1)}px`);
+    if(introNameB) introNameB.style.setProperty('--hero-b',`${(e*travelB).toFixed(1)}px`);
   }
 
   if(firstScene&&nextTease){
