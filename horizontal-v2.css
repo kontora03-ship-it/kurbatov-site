@@ -1010,3 +1010,27 @@ a{color:inherit}
 
 /* V10 safety: binary connector truncation fallback */
 .sprite{background-image:url('assets/sprite.webp?v=2')!important;background-size:300% 300%!important}
+
+
+/* ===== V11 / COMPOSITION REFINEMENT ===== */
+:root{--accent:#2897ff}
+.intro-refined::after{width:min(9vw,142px);height:31%;top:25%;opacity:.92}
+.intro-refined .intro-title{top:47%;font-size:clamp(122px,17.4vw,296px)}
+.intro-refined .intro-title .name-a{margin-left:-6vw}
+.intro-refined .intro-title .name-b{margin-left:13vw}
+.intro-refined .intro-photo{bottom:11vh;width:min(27vw,420px);height:67%}
+.scene-title{letter-spacing:-.075em}
+.track{gap:clamp(24px,2.5vw,46px)}
+.work-media{box-shadow:0 0 0 1px rgba(0,0,0,.05)}
+.dark .work-media{box-shadow:0 0 0 1px rgba(255,255,255,.08)}
+.first-scene .work-rock{width:min(58vw,860px)}
+.first-scene .work-rock .work-media{aspect-ratio:16/9}
+.first-scene .work-rock .work-meta{padding-top:12px}
+.first-scene .category-note{max-width:410px}
+@media(max-width:900px){
+ .intro-refined::after{width:18vw;min-width:66px;max-width:92px;height:25%;top:21%}
+ .intro-refined .intro-title{top:40.5%;font-size:32vw}
+ .intro-refined .intro-photo{top:14%;width:min(40vw,196px);height:43vh}
+ .first-scene .work-rock{width:90vw;max-width:620px}
+ .first-scene .work-rock .work-media{aspect-ratio:16/9}
+}
