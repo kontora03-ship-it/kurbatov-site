@@ -66,3 +66,42 @@ addEventListener('resize',()=>{
 addEventListener('load',measure);
 measure();
 frame();
+
+/* Refined hero + hand-off from category 01 to 02 */
+const refinedIntro=document.querySelector('.intro-refined');
+const introPhoto=refinedIntro?.querySelector('.intro-photo');
+const introNameA=refinedIntro?.querySelector('.name-a');
+const introNameB=refinedIntro?.querySelector('.name-b');
+const firstScene=document.querySelector('.first-scene');
+const nextTease=firstScene?.querySelector('.next-tease');
+
+function updateRefinedDetails(){
+  if(innerWidth<=900){
+    if(introPhoto) introPhoto.style.transform='';
+    if(introNameA) introNameA.style.transform='';
+    if(introNameB) introNameB.style.transform='';
+    if(nextTease) nextTease.style.setProperty('--next','0');
+    return;
+  }
+
+  if(refinedIntro){
+    const h=Math.max(1,refinedIntro.offsetHeight);
+    const p=clamp(scrollY/h);
+    const e=p*(2-p);
+    if(introPhoto) introPhoto.style.transform=`translate3d(0,${(e*14).toFixed(1)}px,0)`;
+    if(introNameA) introNameA.style.transform=`translate3d(${(-e*18).toFixed(1)}px,0,0)`;
+    if(introNameB) introNameB.style.transform=`translate3d(${(e*24).toFixed(1)}px,0,0)`;
+  }
+
+  if(firstScene&&nextTease){
+    const top=firstScene.offsetTop;
+    const range=Math.max(1,firstScene.offsetHeight-innerHeight);
+    const p=clamp((scrollY-top)/range);
+    const reveal=clamp((p-.74)/.26);
+    nextTease.style.setProperty('--next',reveal.toFixed(4));
+  }
+}
+
+addEventListener('scroll',updateRefinedDetails,{passive:true});
+addEventListener('resize',updateRefinedDetails);
+updateRefinedDetails();
