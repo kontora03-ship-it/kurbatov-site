@@ -6,6 +6,7 @@
   --hair:rgba(17,18,16,.26);
   --hair-light:rgba(242,241,236,.26);
   --pad:clamp(22px,3vw,52px);
+  --accent:#2F9BFF;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:auto}
@@ -719,5 +720,123 @@ a{color:inherit}
   }
   .intro-refined .intro-copy{
     margin-top:62vh;
+  }
+}
+
+
+/* ===== HERO ALIGNMENT + BLUE ACCENT V7 ===== */
+.intro-refined::before{
+  content:'';
+  position:absolute;
+  left:50%;
+  top:22%;
+  width:1px;
+  height:36%;
+  background:var(--accent);
+  opacity:.72;
+  z-index:3;
+  transform:translateX(-50%);
+  pointer-events:none;
+}
+
+.intro-refined .intro-photo{
+  bottom:12vh;
+  height:68%;
+}
+
+.intro-refined .intro-index span,
+.intro-refined .intro-role span,
+.intro-refined .intro-foot span:last-child{
+  color:var(--accent);
+}
+
+.brand::after{
+  content:'';
+  display:inline-block;
+  width:6px;
+  height:6px;
+  margin-left:4px;
+  background:var(--accent);
+  border-radius:50%;
+  vertical-align:.15em;
+}
+
+.scene-number,
+.category-note span,
+.work-meta i,
+.text-index,
+.archive-top,
+.outro-small{
+  color:var(--accent);
+}
+
+.progress span{
+  background:var(--accent);
+}
+
+.text-card,
+.archive-card{
+  transition:border-color .3s ease,color .3s ease;
+}
+.text-card:hover,
+.archive-card:hover{
+  border-color:var(--accent);
+}
+
+.work-meta{
+  position:relative;
+}
+.work-meta::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:-1px;
+  width:0;
+  height:1px;
+  background:var(--accent);
+  transition:width .45s ease;
+}
+.work:hover .work-meta::before{
+  width:100%;
+}
+
+.next-tease span{
+  color:var(--accent);
+}
+
+@media(max-width:900px){
+  .intro-refined::before{
+    top:18%;
+    height:34%;
+  }
+
+  .intro-refined .intro-photo{
+    top:16%;
+    bottom:auto;
+    width:min(44vw,214px);
+    height:47vh;
+  }
+
+  .intro-refined .intro-copy{
+    margin-top:60vh;
+  }
+
+  .scene-number,
+  .scene-direction,
+  .work-meta i,
+  .text-index,
+  .archive-top{
+    color:var(--accent);
+  }
+}
+
+@media(max-width:420px){
+  .intro-refined .intro-photo{
+    top:15%;
+    width:43vw;
+    height:45vh;
+  }
+  .intro-refined .intro-copy{
+    margin-top:57vh;
   }
 }
