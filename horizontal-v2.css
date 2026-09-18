@@ -1007,3 +1007,6 @@ a{color:inherit}
  .work,.work.wide,.work.large,.work.medium,.work.slim{width:86vw;max-width:540px}
  .work-media>img{filter:none}
 }
+
+/* V10 safety: binary connector truncation fallback */
+.sprite{background-image:url('assets/sprite.webp?v=2')!important;background-size:300% 300%!important}
