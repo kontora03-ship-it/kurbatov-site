@@ -1034,3 +1034,81 @@ a{color:inherit}
  .first-scene .work-rock{width:90vw;max-width:620px}
  .first-scene .work-rock .work-media{aspect-ratio:16/9}
 }
+
+
+/* ===== V12 / HERO — APPROVED VISUAL DIRECTION ===== */
+.intro-refined{
+  background:#0b0d0e!important;
+  color:#f4f3ef!important;
+}
+.intro-refined .intro-grid{opacity:.08}
+.intro-refined .intro-title{
+  top:47%!important;
+  z-index:2!important;
+  font-size:clamp(118px,15.8vw,270px)!important;
+  line-height:.64!important;
+  transform:translateY(-50%) scaleY(1.16)!important;
+}
+.intro-refined .intro-title .name-a{
+  color:#f4f3ef!important;
+  margin-left:-3vw!important;
+}
+.intro-refined .intro-title .name-b{
+  color:#f4f3ef!important;
+  margin-left:30vw!important;
+}
+.intro-refined .intro-photo{
+  left:50%!important;
+  right:auto!important;
+  bottom:-1vh!important;
+  width:min(27vw,410px)!important;
+  height:78%!important;
+  transform:translateX(-50%)!important;
+  background-image:url('assets/portraits/hero-white-hoodie.webp?v=12')!important;
+  background-size:contain!important;
+  background-position:center bottom!important;
+  filter:grayscale(1) contrast(1.05)!important;
+  z-index:6!important;
+}
+.intro-refined::after{
+  left:27%!important;
+  top:26%!important;
+  width:1px!important;
+  height:50%!important;
+  background:var(--accent)!important;
+  transform:rotate(16deg)!important;
+  transform-origin:center!important;
+  opacity:1!important;
+  z-index:3!important;
+}
+.intro-refined::before{
+  left:57%!important;
+  top:13%!important;
+  width:22vw!important;
+  height:61%!important;
+  border:1px solid rgba(40,151,255,.62)!important;
+  background:transparent!important;
+  transform:rotate(-13deg)!important;
+  opacity:.7!important;
+  z-index:1!important;
+}
+.intro-refined .intro-index,
+.intro-refined .intro-role,
+.intro-refined .intro-copy,
+.intro-refined .intro-categories,
+.intro-refined .intro-foot{color:#f4f3ef!important}
+.intro-refined .intro-copy{bottom:95px!important}
+.intro-refined .intro-copy p:last-child{color:rgba(244,243,239,.72)}
+.intro-refined .intro-foot{border-color:rgba(244,243,239,.55)!important}
+.nav{background:rgba(11,13,14,.86)!important;color:#f4f3ef!important;border-color:rgba(244,243,239,.16)!important}
+
+@media(max-width:900px){
+ .intro-refined .intro-title{top:40%!important;font-size:31vw!important}
+ .intro-refined .intro-title .name-a{margin-left:-18vw!important}
+ .intro-refined .intro-title .name-b{margin-left:10vw!important}
+ .intro-refined .intro-photo{
+   top:15%!important;bottom:auto!important;width:min(44vw,215px)!important;height:50vh!important
+ }
+ .intro-refined::after{left:23%!important;top:21%!important;height:31%!important}
+ .intro-refined::before{left:55%!important;top:17%!important;width:35vw!important;height:39%!important}
+}
