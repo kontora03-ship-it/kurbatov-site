@@ -924,3 +924,63 @@ a{color:inherit}
     padding-left:10px;
   }
 }
+
+
+/* ===== V9 / IMAGE QUALITY + COMPOSITION ===== */
+.intro-refined .intro-photo{
+  background-image:url('assets/portfolio-v2/hero.webp')!important;
+  background-repeat:no-repeat!important;
+  background-size:contain!important;
+  background-position:center bottom!important;
+  filter:none!important;
+}
+.work-media{
+  overflow:hidden;
+  background:#d9d8d3;
+}
+.work-media>img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  object-position:center;
+  filter:grayscale(1) contrast(1.02);
+  transform:scale(1.001);
+  transition:filter .45s ease,transform .6s cubic-bezier(.2,.7,.2,1);
+}
+.work:hover .work-media>img{
+  filter:grayscale(0);
+  transform:scale(1.018);
+}
+.intro-refined::after{
+  width:min(12vw,178px);
+  top:21%;
+  height:38%;
+  opacity:.88;
+}
+.intro-refined .intro-title .name-b{
+  color:var(--accent);
+}
+.first-scene .scene-title{
+  color:var(--accent);
+  opacity:.12;
+}
+.first-scene .archive-card{
+  background:var(--accent);
+  border-color:var(--accent);
+}
+@media(max-width:900px){
+  .intro-refined .intro-photo{
+    top:14%;
+    width:min(42vw,205px);
+    height:44vh;
+  }
+  .intro-refined::after{
+    top:19%;
+    width:22vw;
+    height:28%;
+  }
+  .work-media>img{
+    filter:none;
+  }
+}
