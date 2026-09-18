@@ -984,3 +984,26 @@ a{color:inherit}
     filter:none;
   }
 }
+
+
+/* ===== V10 / REAL IMAGE QUALITY FIX ===== */
+.sprite{
+  background-image:url('assets/sprite-hq.webp?v=10')!important;
+  background-size:300% 300%!important;
+  image-rendering:auto;
+}
+/* Keep raster artwork close to native display size instead of enlarging tiny crops */
+.first-scene .work-rock{width:min(54vw,760px)}
+.first-scene .work-tatprom{width:min(34vw,540px)}
+.first-scene .work-transneft{width:min(34vw,540px)}
+.first-scene .work-transingstroy{width:min(34vw,540px)}
+.work.large{width:min(38vw,540px)}
+.work.medium{width:min(32vw,500px)}
+.work.wide{width:min(46vw,660px)}
+.work-media>img{filter:grayscale(1) contrast(1.01);backface-visibility:hidden}
+.work:hover .work-media>img{filter:grayscale(0);transform:scale(1.01)}
+@media(max-width:900px){
+ .first-scene .work-rock,.first-scene .work-tatprom,.first-scene .work-transneft,.first-scene .work-transingstroy,
+ .work,.work.wide,.work.large,.work.medium,.work.slim{width:86vw;max-width:540px}
+ .work-media>img{filter:none}
+}
