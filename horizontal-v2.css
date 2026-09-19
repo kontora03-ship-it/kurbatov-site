@@ -1113,86 +1113,57 @@ a{color:inherit}
  .intro-refined::before{left:55%!important;top:17%!important;width:35vw!important;height:39%!important}
 }
 
-
-/* ===== V13 / SMOOTHER SECTION HANDOFF + PRINT CROSS CURSOR ===== */
-.hscene{
-  --scene-bg:var(--light);
-  isolation:isolate;
+/* ===== V14 / MOTION HANDOFF + VISIBLE PRINT CROSS ===== */
+.track-wrap{
+  will-change:transform;
+  transform-origin:center center;
 }
-.hscene.light{--scene-bg:var(--light)}
-.hscene.dark{--scene-bg:var(--dark)}
-
-.hscene::before,
-.hscene::after{
-  content:'';
-  position:absolute;
-  left:0;
-  right:0;
-  height:150px;
-  pointer-events:none;
-  z-index:6;
+.scene-chrome,
+.category-note{
+  will-change:transform;
 }
-.hscene::before{
-  top:-74px;
-  background:linear-gradient(to bottom,rgba(0,0,0,0) 0%,var(--scene-bg) 72%,var(--scene-bg) 100%);
-}
-.hscene::after{
-  bottom:-74px;
-  background:linear-gradient(to top,rgba(0,0,0,0) 0%,var(--scene-bg) 72%,var(--scene-bg) 100%);
-}
-
-.hscene .scene-chrome,
-.hscene .category-note{
-  transition:opacity .55s cubic-bezier(.22,.61,.36,1),transform .55s cubic-bezier(.22,.61,.36,1);
-  opacity:var(--scene-focus,1);
-  transform:translate3d(0,var(--scene-y,0px),0);
-}
-.hscene .scene-title{
-  transition:opacity .55s cubic-bezier(.22,.61,.36,1);
-}
-.track{
-  transition:filter .45s ease;
-}
-.hscene[data-edge='1'] .track{
-  filter:saturate(.92) contrast(.99);
-}
-
-/* Keep the native arrow; this is the delayed print registration cross. */
 .cursor-cross{
   position:fixed;
   left:0;
   top:0;
-  width:12px;
-  height:12px;
+  width:14px;
+  height:14px;
   z-index:9999;
   pointer-events:none;
   opacity:0;
   transform:translate3d(-100px,-100px,0);
-  transition:opacity .18s ease;
+  transition:opacity .16s ease;
   will-change:transform;
 }
 .cursor-cross::before,
 .cursor-cross::after{
   content:'';
   position:absolute;
-  background:var(--accent);
-  box-shadow:0 0 8px rgba(40,151,255,.18);
+  background:#2997ff;
 }
 .cursor-cross::before{
   width:1px;
-  height:12px;
-  left:5.5px;
+  height:14px;
+  left:6.5px;
   top:0;
 }
 .cursor-cross::after{
   height:1px;
-  width:12px;
+  width:14px;
   left:0;
-  top:5.5px;
+  top:6.5px;
 }
-.cursor-cross.is-visible{opacity:.82}
+.cursor-cross span{
+  position:absolute;
+  left:5.5px;
+  top:5.5px;
+  width:3px;
+  height:3px;
+  border:1px solid #2997ff;
+  border-radius:50%;
+}
+.cursor-cross.is-visible{opacity:1}
 
-@media (hover:none),(pointer:coarse),(max-width:900px){
+@media (hover:none),(max-width:900px){
   .cursor-cross{display:none!important}
-  .hscene::before,.hscene::after{display:none}
 }
