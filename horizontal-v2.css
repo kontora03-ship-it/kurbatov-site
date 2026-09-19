@@ -1112,3 +1112,87 @@ a{color:inherit}
  .intro-refined::after{left:23%!important;top:21%!important;height:31%!important}
  .intro-refined::before{left:55%!important;top:17%!important;width:35vw!important;height:39%!important}
 }
+
+
+/* ===== V13 / SMOOTHER SECTION HANDOFF + PRINT CROSS CURSOR ===== */
+.hscene{
+  --scene-bg:var(--light);
+  isolation:isolate;
+}
+.hscene.light{--scene-bg:var(--light)}
+.hscene.dark{--scene-bg:var(--dark)}
+
+.hscene::before,
+.hscene::after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  height:150px;
+  pointer-events:none;
+  z-index:6;
+}
+.hscene::before{
+  top:-74px;
+  background:linear-gradient(to bottom,rgba(0,0,0,0) 0%,var(--scene-bg) 72%,var(--scene-bg) 100%);
+}
+.hscene::after{
+  bottom:-74px;
+  background:linear-gradient(to top,rgba(0,0,0,0) 0%,var(--scene-bg) 72%,var(--scene-bg) 100%);
+}
+
+.hscene .scene-chrome,
+.hscene .category-note{
+  transition:opacity .55s cubic-bezier(.22,.61,.36,1),transform .55s cubic-bezier(.22,.61,.36,1);
+  opacity:var(--scene-focus,1);
+  transform:translate3d(0,var(--scene-y,0px),0);
+}
+.hscene .scene-title{
+  transition:opacity .55s cubic-bezier(.22,.61,.36,1);
+}
+.track{
+  transition:filter .45s ease;
+}
+.hscene[data-edge='1'] .track{
+  filter:saturate(.92) contrast(.99);
+}
+
+/* Keep the native arrow; this is the delayed print registration cross. */
+.cursor-cross{
+  position:fixed;
+  left:0;
+  top:0;
+  width:12px;
+  height:12px;
+  z-index:9999;
+  pointer-events:none;
+  opacity:0;
+  transform:translate3d(-100px,-100px,0);
+  transition:opacity .18s ease;
+  will-change:transform;
+}
+.cursor-cross::before,
+.cursor-cross::after{
+  content:'';
+  position:absolute;
+  background:var(--accent);
+  box-shadow:0 0 8px rgba(40,151,255,.18);
+}
+.cursor-cross::before{
+  width:1px;
+  height:12px;
+  left:5.5px;
+  top:0;
+}
+.cursor-cross::after{
+  height:1px;
+  width:12px;
+  left:0;
+  top:5.5px;
+}
+.cursor-cross.is-visible{opacity:.82}
+
+@media (hover:none),(pointer:coarse),(max-width:900px){
+  .cursor-cross{display:none!important}
+  .hscene::before,.hscene::after{display:none}
+}
