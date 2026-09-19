@@ -33,7 +33,7 @@ function updateTargets(){
     const range=Math.max(1,scene.offsetHeight-vh);
     const p=clamp((y-top)/range);
     const reverse=scene.dataset.direction==='reverse';
-    state.target=reverse ? -state.travel*(1-p) : -state.travel*p;
+    const ep=p*p*(3-2*p);\n    state.target=reverse ? -state.travel*(1-ep) : -state.travel*ep;\n    const focus=.76+Math.sin(Math.PI*p)*.24;\n    scene.style.setProperty('--scene-focus',focus.toFixed(3));\n    scene.style.setProperty('--scene-y',`${((.5-p)*8).toFixed(1)}px`);\n    scene.dataset.edge=(p<.08||p>.92)?'1':'0';
     const bar=scene.querySelector('.progress');
     if(bar) bar.style.setProperty('--p',p.toFixed(4));
     const title=scene.querySelector('.scene-title');
@@ -49,7 +49,7 @@ function frame(){
     scenes.forEach(scene=>{
       const state=states.get(scene);
       if(!state) return;
-      state.current += (state.target-state.current)*.11;
+      state.current += (state.target-state.current)*.085;
       if(Math.abs(state.target-state.current)<.05) state.current=state.target;
       scene.querySelector('.track').style.transform=`translate3d(${state.current.toFixed(2)}px,0,0)`;
     });
@@ -100,3 +100,41 @@ function updateRefinedDetails(){
 addEventListener('scroll',updateRefinedDetails,{passive:true});
 addEventListener('resize',updateRefinedDetails);
 updateRefinedDetails();
+
+
+/* V13 delayed print cross cursor */
+const printCross=document.createElement('div');
+printCross.className='cursor-cross';
+document.body.appendChild(printCross);
+
+let pointerX=-100;
+let pointerY=-100;
+let crossX=-100;
+let crossY=-100;
+let pointerSeen=false;
+
+addEventListener('mousemove',e=>{
+  pointerX=e.clientX;
+  pointerY=e.clientY;
+  if(!pointerSeen){
+    pointerSeen=true;
+    crossX=pointerX+12;
+    crossY=pointerY+12;
+    printCross.classList.add('is-visible');
+  }
+},{passive:true});
+
+addEventListener('mouseleave',()=>{
+  pointerSeen=false;
+  printCross.classList.remove('is-visible');
+});
+
+function animatePrintCross(){
+  if(pointerSeen && innerWidth>900){
+    crossX+=(pointerX-crossX)*.115;
+    crossY+=(pointerY-crossY)*.115;
+    printCross.style.transform=`translate3d(${(crossX-6).toFixed(2)}px,${(crossY-6).toFixed(2)}px,0)`;
+  }
+  requestAnimationFrame(animatePrintCross);
+}
+animatePrintCross();
