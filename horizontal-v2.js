@@ -1,5 +1,6 @@
 const scenes=[...document.querySelectorAll('.hscene')];
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const smoothstep=p=>p*p*(3-2*p);
 const states=new Map();
 
 function measure(){
@@ -7,16 +8,25 @@ function measure(){
   scenes.forEach(scene=>{
     const track=scene.querySelector('.track');
     const progress=scene.querySelector('.progress');
+
     if(vw<=900){
       scene.style.height='';
       track.style.transform='';
+      const wrap=scene.querySelector('.track-wrap');
+      if(wrap) wrap.style.transform='';
+      const chrome=scene.querySelector('.scene-chrome');
+      if(chrome) chrome.style.transform='';
+      const note=scene.querySelector('.category-note');
+      if(note) note.style.transform='';
       if(progress) progress.style.setProperty('--p','0');
       states.set(scene,{target:0,current:0,travel:0});
       return;
     }
+
     const travel=Math.max(0,track.scrollWidth-vw);
-    const scrollDistance=Math.max(vh*.9,travel*1.03);
+    const scrollDistance=Math.max(vh*.95,travel*1.05);
     scene.style.height=(vh+scrollDistance)+'px';
+
     const prev=states.get(scene)||{current:0};
     states.set(scene,{travel,target:prev.current,current:prev.current});
   });
@@ -25,21 +35,53 @@ function measure(){
 
 function updateTargets(){
   if(innerWidth<=900) return;
-  const y=scrollY, vh=innerHeight;
+
+  const y=scrollY;
+  const vh=innerHeight;
+
   scenes.forEach(scene=>{
     const state=states.get(scene);
     if(!state) return;
+
     const top=scene.offsetTop;
     const range=Math.max(1,scene.offsetHeight-vh);
     const p=clamp((y-top)/range);
+    const e=smoothstep(p);
     const reverse=scene.dataset.direction==='reverse';
-    const ep=p*p*(3-2*p);\n    state.target=reverse ? -state.travel*(1-ep) : -state.travel*ep;\n    const focus=.76+Math.sin(Math.PI*p)*.24;\n    scene.style.setProperty('--scene-focus',focus.toFixed(3));\n    scene.style.setProperty('--scene-y',`${((.5-p)*8).toFixed(1)}px`);\n    scene.dataset.edge=(p<.08||p>.92)?'1':'0';
-    const bar=scene.querySelector('.progress');
-    if(bar) bar.style.setProperty('--p',p.toFixed(4));
+
+    state.target=reverse
+      ? -state.travel*(1-e)
+      : -state.travel*e;
+
+    const progress=scene.querySelector('.progress');
+    if(progress) progress.style.setProperty('--p',p.toFixed(4));
+
+    // Section hand-off is movement only: previous scene rises away,
+    // next scene enters slightly from below.
+    const handoffY=(p-.5)*24;
+    const edge=Math.abs(p-.5)*2;
+    const handoffScale=1-(edge*.012);
+
+    const wrap=scene.querySelector('.track-wrap');
+    if(wrap){
+      wrap.style.transform=`translate3d(0,${handoffY.toFixed(1)}px,0) scale(${handoffScale.toFixed(4)})`;
+    }
+
+    const chrome=scene.querySelector('.scene-chrome');
+    if(chrome){
+      chrome.style.transform=`translate3d(0,${(handoffY*.25).toFixed(1)}px,0)`;
+    }
+
+    const note=scene.querySelector('.category-note');
+    if(note){
+      note.style.transform=`translate3d(0,${(handoffY*.4).toFixed(1)}px,0)`;
+    }
+
     const title=scene.querySelector('.scene-title');
     if(title){
-      const drift=(p-.5)*(reverse?-28:28);
-      title.style.transform=`translate3d(${drift.toFixed(1)}px,0,0)`;
+      const drift=(e-.5)*(reverse?-34:34);
+      const lift=handoffY*.32;
+      title.style.transform=`translate3d(${drift.toFixed(1)}px,${lift.toFixed(1)}px,0)`;
     }
   });
 }
@@ -49,9 +91,14 @@ function frame(){
     scenes.forEach(scene=>{
       const state=states.get(scene);
       if(!state) return;
-      state.current += (state.target-state.current)*.085;
+
+      state.current+=(state.target-state.current)*.075;
       if(Math.abs(state.target-state.current)<.05) state.current=state.target;
-      scene.querySelector('.track').style.transform=`translate3d(${state.current.toFixed(2)}px,0,0)`;
+
+      const track=scene.querySelector('.track');
+      if(track){
+        track.style.transform=`translate3d(${state.current.toFixed(2)}px,0,0)`;
+      }
     });
   }
   requestAnimationFrame(frame);
@@ -69,7 +116,6 @@ frame();
 
 /* Refined hero + hand-off from category 01 to 02 */
 const refinedIntro=document.querySelector('.intro-refined');
-const introPhoto=refinedIntro?.querySelector('.intro-photo');
 const introNameA=refinedIntro?.querySelector('.name-a');
 const introNameB=refinedIntro?.querySelector('.name-b');
 const firstScene=document.querySelector('.first-scene');
@@ -101,10 +147,10 @@ addEventListener('scroll',updateRefinedDetails,{passive:true});
 addEventListener('resize',updateRefinedDetails);
 updateRefinedDetails();
 
-
-/* V13 delayed print cross cursor */
+/* Delayed print registration cross */
 const printCross=document.createElement('div');
 printCross.className='cursor-cross';
+printCross.innerHTML='<span></span>';
 document.body.appendChild(printCross);
 
 let pointerX=-100;
@@ -116,10 +162,11 @@ let pointerSeen=false;
 addEventListener('mousemove',e=>{
   pointerX=e.clientX;
   pointerY=e.clientY;
+
   if(!pointerSeen){
     pointerSeen=true;
-    crossX=pointerX+12;
-    crossY=pointerY+12;
+    crossX=pointerX+18;
+    crossY=pointerY+18;
     printCross.classList.add('is-visible');
   }
 },{passive:true});
@@ -131,9 +178,13 @@ addEventListener('mouseleave',()=>{
 
 function animatePrintCross(){
   if(pointerSeen && innerWidth>900){
-    crossX+=(pointerX-crossX)*.115;
-    crossY+=(pointerY-crossY)*.115;
-    printCross.style.transform=`translate3d(${(crossX-6).toFixed(2)}px,${(crossY-6).toFixed(2)}px,0)`;
+    // Small permanent offset keeps the registration mark visible beside the native arrow,
+    // while lerp gives the delayed trailing feel.
+    const targetX=pointerX+18;
+    const targetY=pointerY+18;
+    crossX+=(targetX-crossX)*.105;
+    crossY+=(targetY-crossY)*.105;
+    printCross.style.transform=`translate3d(${(crossX-7).toFixed(2)}px,${(crossY-7).toFixed(2)}px,0)`;
   }
   requestAnimationFrame(animatePrintCross);
 }
