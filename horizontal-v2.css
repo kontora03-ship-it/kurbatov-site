@@ -1167,3 +1167,27 @@ a{color:inherit}
 @media (hover:none),(max-width:900px){
   .cursor-cross{display:none!important}
 }
+
+
+/* ===== V15 / HERO TITLE EDGE OVERHANG ===== */
+/* First name touches the left edge with ~10% of the first glyph outside.
+   Surname touches the right edge with ~10% of the last glyph outside. */
+.intro-refined .intro-title .name-a{
+  margin-left:-0.06em!important;
+  margin-right:auto!important;
+}
+.intro-refined .intro-title .name-b{
+  margin-left:auto!important;
+  margin-right:-0.06em!important;
+}
+
+@media(max-width:900px){
+  .intro-refined .intro-title .name-a{
+    margin-left:-0.06em!important;
+    margin-right:auto!important;
+  }
+  .intro-refined .intro-title .name-b{
+    margin-left:auto!important;
+    margin-right:-0.06em!important;
+  }
+}
