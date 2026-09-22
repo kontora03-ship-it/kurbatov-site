@@ -2,34 +2,147 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f4f3ef">
-  <meta name="description" content="Портфолио Александра Курбатова — графический дизайн, арт-дирекшн, упаковка, полиграфия, календари, мерч и editorial.">
-  <title>Alexandr Kurbatov — Graphic Designer / Art Director</title>
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="media.css">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Alexandr Kurbatov — Horizontal Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="horizontal-v2.css?v=17">
 </head>
 <body>
-  <div class="page-wipe" aria-hidden="true"><i></i><b></b></div>
-  <header class="topbar"><a class="brand" href="#hero">AK</a><nav><a href="#works">РАБОТЫ</a><a href="#about">ОБО МНЕ</a><a href="#contact">КОНТАКТ</a></nav><div class="lang"><button class="lang-btn is-active" data-lang="ru">RU</button><span>/</span><button class="lang-btn" data-lang="en">EN</button></div></header>
+  <header class="nav">
+    <a class="brand" href="#hero">AK</a>
+    <div class="nav-center">SELECTED WORK / HORIZONTAL PORTFOLIO</div>
+    <nav>
+      <a href="#s1">WORKS</a>
+      <a href="#contact">CONTACT</a>
+    </nav>
+  </header>
+
   <main>
-    <section id="hero" class="theme-section theme-light hero" data-theme="light">
-      <div class="hero-inner">
-        <div class="hero-copy reveal"><p class="hero-label">GRAPHIC DESIGNER / ART DIRECTOR</p><h1><span>ALEXANDR</span><span>KURBATOV</span></h1><p class="hero-sub" data-i18n="heroSub">Графический дизайн для реального мира.</p><p class="hero-note" data-i18n="heroNote">Брендинг, упаковка, полиграфия, editorial, презентации и специальные проекты — от идеи до производства.</p><a class="hero-link" href="#works"><span data-i18n="viewWorks">СМОТРЕТЬ РАБОТЫ</span><b>↘</b></a></div>
-        <div class="hero-visual reveal" aria-label="Портрет Александра Курбатова"><div class="hero-plate plate-a"></div><div class="hero-plate plate-b"></div><div class="hero-line hero-line-a"></div><div class="hero-line hero-line-b"></div><div class="hero-mark mark-a"></div><div class="hero-mark mark-b"></div><div class="hero-photo" role="img" aria-label="Alexandr Kurbatov в белой толстовке"></div><div class="hero-sidecopy" aria-hidden="true">PRINT<br>PEOPLE<br>IDEAS<br>RESULTS</div></div>
-      </div><div class="hero-foot"><span>BRANDING</span><span>PRINT</span><span>PACKAGING</span><span>EDITORIAL</span><span>MERCH</span><span>ART DIRECTION</span></div>
+    <section class="hero" id="hero">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-bar" aria-hidden="true"></div>
+
+      <div class="hero-topline">
+        <span>PORTFOLIO / 2026</span>
+        <span>GRAPHIC DESIGN / ART DIRECTION</span>
+      </div>
+
+      <h1 class="hero-title" aria-label="Alexandr Kurbatov">
+        <span class="title-a">ALEXANDR</span>
+        <span class="title-b">KURBATOV</span>
+      </h1>
+
+      <figure class="hero-portrait">
+        <img src="assets/hero.png" alt="Alexandr Kurbatov in a white hoodie">
+      </figure>
+
+      <aside class="hero-copy">
+        <div class="eyebrow">20+ YEARS</div>
+        <p>Брендинг, упаковка, полиграфия, editorial, презентации, мерч и специальные проекты — от идеи до готового продукта.</p>
+      </aside>
+
+      <div class="hero-categories">
+        <span>01 CALENDARS / PRINT</span>
+        <span>02 PACKAGING / PRODUCT</span>
+        <span>03 BRANDING / IDENTITY</span>
+        <span>04 MERCH / OBJECTS</span>
+        <span>05 EDITORIAL / BOOKS</span>
+        <span>06 PRESENTATIONS / DIRECTION</span>
+      </div>
+
+      <div class="hero-foot">
+        <span>SELECTED WORK / 06 CATEGORIES</span>
+        <span>SCROLL TO EXPLORE ↓</span>
+      </div>
     </section>
-    <section id="works" class="theme-section theme-dark project-section project-feature" data-theme="dark" data-project="rock"><div class="project-media project-color reveal"><span class="sprite sprite-rock"></span></div><div class="project-caption reveal"><div class="project-kicker">CALENDAR / PERSONAL PROJECT</div><h2>Rock Lives in Us</h2><p data-i18n="rockText">Минималистичный двухсторонний календарь о культовых музыкальных группах. В основе — чёрно-белая фотография, типографика и эстетика аналоговой музыкальной культуры.</p></div></section>
-    <section class="theme-section theme-light twin-projects" data-theme="light"><article class="project-card reveal" data-project="tatprom"><div class="project-media project-color"><span class="sprite sprite-tatprom"></span></div><div class="project-caption compact"><div class="project-kicker">CORPORATE CALENDAR</div><h2>ТатПром Холдинг</h2><p data-i18n="tatpromText">Календарь об истории нефтяной геологии и людях отрасли. Архивная эстетика соединена с современной графической системой и крупными иллюстративными образами.</p></div></article><article class="project-card project-card-small reveal" data-project="transneft"><div class="project-media project-color"><span class="sprite sprite-transneft"></span></div><div class="project-caption compact"><div class="project-kicker">PRINT / CORPORATE</div><h2>Транснефть — 9 Мая</h2><p data-i18n="transneftText">Серия поздравительных материалов ко Дню Победы. Архивные фотографии и исторические мотивы собраны в современной композиции без избыточной декоративности.</p></div></article></section>
-    <section class="theme-section theme-dark garuss-section" data-theme="dark"><div class="sticky-copy reveal"><div class="project-kicker">MERCH / IDENTITY</div><h2>GARUSS</h2><p data-i18n="garussText">Фирменный мерч на основе типографики, знака R и ограниченной палитры. Графика адаптирована под печать, вышивку и разные носители.</p></div><div class="garuss-media reveal" data-project="garuss"><div class="project-media project-color"><span class="sprite sprite-garuss"></span></div></div></section>
-    <section class="theme-section theme-light product-pair" data-theme="light"><article class="product-row reveal" data-project="woex"><div class="project-caption compact"><div class="project-kicker">PACKAGING / PRODUCT DESIGN</div><h2>WOEX</h2><p data-i18n="woexText">Модульная система упаковки для нескольких категорий бытовой техники.</p></div><div class="project-media project-color"><span class="sprite sprite-woex"></span></div></article><article class="product-row product-row-alt reveal" data-project="transingstroy"><div class="project-media project-color"><span class="sprite sprite-transingstroy"></span></div><div class="project-caption compact"><div class="project-kicker">CALENDAR / PRINT</div><h2>Трансинжстрой</h2><p data-i18n="transingstroyText">Корпоративный календарь с архитектурно-инженерной пластикой и туннельной темой.</p></div></article></section>
-    <section class="theme-section theme-dark editorial-section" data-theme="dark"><div class="editorial-intro reveal"><span>EDITORIAL / BOOKS</span><p data-i18n="editorialIntro">Книги и альбомы — отдельное направление моей работы.</p></div><article class="editorial-project reveal" data-project="aviation"><div class="project-media project-color"><span class="sprite sprite-aviation"></span></div><div class="project-caption compact"><div class="project-kicker">ANNIVERSARY BOOK</div><h2>80 лет авиационному заводу</h2><p data-i18n="aviationText">Юбилейное издание об истории завода.</p></div></article><article class="editorial-project editorial-project-alt reveal" data-project="buryatia"><div class="project-caption compact"><div class="project-kicker">ART BOOK</div><h2>Изобразительное искусство</h2><p data-i18n="buryatiaText">Художественный альбом с большим количеством произведений и биографических материалов.</p></div><div class="project-media project-color"><span class="sprite sprite-buryatia"></span></div></article></section>
-    <section id="about" class="theme-section theme-light about-section" data-theme="light"><div class="about-title reveal"><span>20+</span><h2 data-i18n-html="aboutTitle">ЛЕТ<br>В ДИЗАЙНЕ</h2></div><div class="about-copy reveal"><p data-i18n="aboutText">Я Александр Курбатов — графический дизайнер и арт-директор.</p><div class="disciplines"><span>BRANDING</span><span>PRINT</span><span>PACKAGING</span><span>EDITORIAL</span><span>PRESENTATIONS</span><span>MERCH</span><span>ART DIRECTION</span></div></div></section>
-    <section class="theme-section theme-dark process-section" data-theme="dark"><div class="process-line"><span>IDEA</span><b>→</b><span>SYSTEM</span><b>→</b><span>DESIGN</span><b>→</b><span>PRODUCTION</span></div><p data-i18n="processText">От идеи и визуальной системы — до реального носителя и производства.</p></section>
-    <section id="contact" class="theme-section theme-light contact-section" data-theme="light"><div class="contact-copy reveal"><p class="contact-kicker">CONTACT</p><h2 data-i18n-html="contactTitle">ЕСТЬ ЗАДАЧА?<br><em>ДАВАЙТЕ ОБСУДИМ.</em></h2><p data-i18n="contactText">Открыт к проектной работе, арт-дирекшну и сотрудничеству.</p><div class="contact-links"><a href="https://www.behance.net/kontora03" target="_blank" rel="noopener">BEHANCE ↗</a><a href="#hero">KURBATOV.SITE</a></div></div><div class="contact-portrait reveal"><span class="sprite sprite-end"></span></div></section>
+
+    <section class="scene light" id="s1" data-direction="forward">
+      <div class="pin">
+        <div class="scene-chrome"><span>01 / 06</span><span>CALENDARS / PRINT</span><span>SCROLL →</span></div>
+        <h2 class="scene-bg">CALENDARS<br>& PRINT</h2>
+        <div class="scene-note"><span>01</span><p>Календари, корпоративная полиграфия и печатные материалы. Добавлен проект ROCK LIVES IN US с предметной подачей и разворотом календаря.</p></div>
+        <div class="track-wrap"><div class="track">
+          <article class="card xl"><div class="card-media"><img src="assets/rock-lives-scene.webp" alt="Rock Lives in Us calendar lifestyle photo"></div><div class="card-meta"><strong>ROCK LIVES IN US</strong><span>CALENDAR / PERSONAL PROJECT / HERO SHOT</span><i>01</i></div></article>
+          <article class="card m offset"><div class="card-media"><img src="assets/rock-lives-overview.webp" alt="Rock Lives in Us inside page"></div><div class="card-meta"><strong>ROCK LIVES IN US — OVERVIEW</strong><span>OBJECT / FRONT & CALENDAR</span><i>02</i></div></article>
+          <article class="card m"><div class="card-media"><img src="assets/tatprom.webp" alt="Tatprom calendar"></div><div class="card-meta"><strong>ТАТПРОМ ХОЛДИНГ</strong><span>CORPORATE CALENDAR</span><i>03</i></div></article>
+          <article class="card l"><div class="card-media"><img src="assets/transneft.webp" alt="Transneft 9 may print"></div><div class="card-meta"><strong>ТРАНСНЕФТЬ — 9 МАЯ</strong><span>PRINT / CORPORATE</span><i>04</i></div></article>
+          <article class="card m offset2"><div class="card-media"><img src="assets/transingstroy.webp" alt="Transinzhstroy print"></div><div class="card-meta"><strong>ТРАНСИНЖСТРОЙ</strong><span>CALENDAR / PRINT</span><i>05</i></div></article>
+          <article class="card text accent"><div class="text-card"><span>PRINT ARCHIVE</span><b>MORE<br>SELECTED<br>WORK</b><small>CALENDARS / CARDS / CORPORATE PRINT</small></div></article>
+        </div></div>
+        <div class="progress"><span></span></div>
+      </div>
+    </section>
+
+    <section class="scene dark" data-direction="reverse">
+      <div class="pin">
+        <div class="scene-chrome"><span>02 / 06</span><span>PACKAGING / PRODUCT</span><span>SCROLL ←</span></div>
+        <h2 class="scene-bg right">PACKAGING<br>& PRODUCT</h2>
+        <div class="track-wrap"><div class="track">
+          <article class="card text"><div class="text-card darkmode"><span>PACKAGING</span><b>FORM<br>FOLLOWS<br>PRODUCT</b><small>STRUCTURE / GRAPHICS / RETAIL</small></div></article>
+          <article class="card l"><div class="card-media"><img src="assets/pack1.webp" alt="Daewoo packaging"></div><div class="card-meta"><strong>DAEWOO</strong><span>PACKAGING / PRODUCT</span><i>01</i></div></article>
+          <article class="card l offset"><div class="card-media"><img src="assets/pack2.webp" alt="XIOM package concept"></div><div class="card-meta"><strong>XIOM</strong><span>PACKAGING SYSTEM</span><i>02</i></div></article>
+          <article class="card l"><div class="card-media"><img src="assets/pack3.webp" alt="WOEX package"></div><div class="card-meta"><strong>WOEX</strong><span>RETAIL PACKAGING</span><i>03</i></div></article>
+        </div></div>
+        <div class="progress"><span></span></div>
+      </div>
+    </section>
+
+    <section class="scene light" data-direction="forward">
+      <div class="pin">
+        <div class="scene-chrome"><span>03 / 06</span><span>BRANDING / IDENTITY</span><span>SCROLL →</span></div>
+        <h2 class="scene-bg">BRANDING<br>& IDENTITY</h2>
+        <div class="track-wrap"><div class="track">
+          <article class="card xl"><div class="card-media"><img src="assets/garuss.webp" alt="Garuss identity and merch"></div><div class="card-meta"><strong>GARUSS</strong><span>IDENTITY / MERCH</span><i>01</i></div></article>
+          <article class="card text"><div class="text-card"><span>IDENTITY</span><b>TYPE<br>MARK<br>RHYTHM</b><small>SYSTEM / CONSISTENCY / APPLICATION</small></div></article>
+          <article class="card l offset"><div class="card-media"><img src="assets/pack2.webp" alt="Branding system"></div><div class="card-meta"><strong>VISUAL SYSTEMS</strong><span>IDENTITY / APPLICATION</span><i>02</i></div></article>
+        </div></div>
+        <div class="progress"><span></span></div>
+      </div>
+    </section>
+
+    <section class="scene dark" data-direction="reverse">
+      <div class="pin">
+        <div class="scene-chrome"><span>04 / 06</span><span>MERCH / OBJECTS</span><span>SCROLL ←</span></div>
+        <h2 class="scene-bg right">MERCH<br>& OBJECTS</h2>
+        <div class="track-wrap"><div class="track">
+          <article class="card text"><div class="text-card darkmode"><span>OBJECTS</span><b>REAL<br>THINGS<br>MATTER</b><small>MERCH / GIFTS / SPECIAL PROJECTS</small></div></article>
+          <article class="card l"><div class="card-media"><img src="assets/garuss.webp" alt="Garuss merch"></div><div class="card-meta"><strong>CORPORATE MERCH</strong><span>APPAREL / OBJECTS</span><i>01</i></div></article>
+          <article class="card l offset"><div class="card-media"><img src="assets/giftbox.webp" alt="Gift box"></div><div class="card-meta"><strong>GIFT SET</strong><span>OBJECT / PACKAGING</span><i>02</i></div></article>
+        </div></div>
+        <div class="progress"><span></span></div>
+      </div>
+    </section>
+
+    <section class="scene light" data-direction="forward">
+      <div class="pin">
+        <div class="scene-chrome"><span>05 / 06</span><span>EDITORIAL / BOOKS</span><span>SCROLL →</span></div>
+        <h2 class="scene-bg">EDITORIAL<br>& BOOKS</h2>
+        <div class="track-wrap"><div class="track">
+          <article class="card l"><div class="card-media"><img src="assets/book1.webp" alt="Book project"></div><div class="card-meta"><strong>ANNIVERSARY BOOK</strong><span>EDITORIAL / BOOK</span><i>01</i></div></article>
+          <article class="card l offset"><div class="card-media"><img src="assets/book2.webp" alt="Book project"></div><div class="card-meta"><strong>COLLECTOR EDITION</strong><span>BOOK / PRINT</span><i>02</i></div></article>
+          <article class="card l"><div class="card-media"><img src="assets/book3.webp" alt="Book project"></div><div class="card-meta"><strong>ART ALBUM</strong><span>EDITORIAL / CATALOGUE</span><i>03</i></div></article>
+          <article class="card text"><div class="text-card"><span>EDITORIAL</span><b>PACE<br>TYPE<br>IMAGE</b><small>LONGFORM / BOOKS / CATALOGUES</small></div></article>
+        </div></div>
+        <div class="progress"><span></span></div>
+      </div>
+    </section>
+
+    <section class="scene dark" data-direction="reverse" id="contact">
+      <div class="pin">
+        <div class="scene-chrome"><span>06 / 06</span><span>PRESENTATIONS / DIRECTION</span><span>SCROLL ←</span></div>
+        <h2 class="scene-bg right">DIRECTION<br>& STORY</h2>
+        <div class="track-wrap"><div class="track">
+          <article class="card text"><div class="text-card darkmode"><span>COMMUNICATION</span><b>COMPLEX<br>TO<br>CLEAR</b><small>PRESENTATIONS / STRUCTURE / STORY</small></div></article>
+          <article class="card xl"><div class="card-media"><img src="assets/present.webp" alt="Presentation design"></div><div class="card-meta"><strong>CORPORATE STORYTELLING</strong><span>PRESENTATION / DIRECTION</span><i>01</i></div></article>
+          <article class="card text accent"><div class="text-card"><span>CONTACT</span><b>LET'S MAKE<br>SOMETHING<br>REAL</b><small>BEHANCE / KONTORA03</small></div></article>
+        </div></div>
+        <div class="progress"><span></span></div>
+      </div>
+    </section>
   </main>
-  <footer><span>© 2026 Alexandr Kurbatov</span><span>GRAPHIC DESIGN / ART DIRECTION</span></footer>
-  <dialog id="projectDialog" class="project-dialog"><button class="dialog-close">×</button><div class="dialog-shell"><div class="dialog-head"><p id="dialogCategory"></p><h2 id="dialogTitle"></h2><p id="dialogDescription"></p></div><div id="dialogGallery" class="dialog-gallery"></div><button class="dialog-next"><span data-i18n="nextProject">СЛЕДУЮЩИЙ ПРОЕКТ</span> ↘</button></div></dialog>
-  <script src="script.js"></script>
-</body></html>
+
+  <script src="horizontal-v2.js"></script>
+</body>
+</html>

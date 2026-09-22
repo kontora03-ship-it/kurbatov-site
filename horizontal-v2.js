@@ -1,191 +1,111 @@
-const scenes=[...document.querySelectorAll('.hscene')];
+
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const smoothstep=p=>p*p*(3-2*p);
+const hero=document.querySelector('.hero');
+const titleA=document.querySelector('.title-a');
+const titleB=document.querySelector('.title-b');
+const scenes=[...document.querySelectorAll('.scene')];
 const states=new Map();
 
+const cursorCross=document.createElement('div');
+cursorCross.className='cursor-cross';
+document.body.appendChild(cursorCross);
+let mouseX=-100,mouseY=-100,crossX=-100,crossY=-100,crossVisible=false,activeHover=false;
+addEventListener('mousemove',e=>{
+  mouseX=e.clientX;mouseY=e.clientY;
+  if(!crossVisible){
+    crossVisible=true;
+    crossX=mouseX+18;crossY=mouseY+18;
+    cursorCross.classList.add('is-visible');
+  }
+},{passive:true});
+addEventListener('mouseleave',()=>{crossVisible=false;cursorCross.classList.remove('is-visible')});
+document.querySelectorAll('a,.card,.text-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>activeHover=true);
+  el.addEventListener('mouseleave',()=>activeHover=false);
+});
+
 function measure(){
-  const vw=innerWidth, vh=innerHeight;
+  const vw=innerWidth,vh=innerHeight;
   scenes.forEach(scene=>{
     const track=scene.querySelector('.track');
-    const progress=scene.querySelector('.progress');
-
-    if(vw<=900){
+    if(vw<=980){
       scene.style.height='';
-      track.style.transform='';
-      const wrap=scene.querySelector('.track-wrap');
-      if(wrap) wrap.style.transform='';
-      const chrome=scene.querySelector('.scene-chrome');
-      if(chrome) chrome.style.transform='';
-      const note=scene.querySelector('.category-note');
-      if(note) note.style.transform='';
-      if(progress) progress.style.setProperty('--p','0');
-      states.set(scene,{target:0,current:0,travel:0});
+      states.set(scene,{travel:0,current:0,target:0});
       return;
     }
-
     const travel=Math.max(0,track.scrollWidth-vw);
-    const scrollDistance=Math.max(vh*.95,travel*1.05);
+    const scrollDistance=Math.max(vh*.86,travel*.84);
     scene.style.height=(vh+scrollDistance)+'px';
-
     const prev=states.get(scene)||{current:0};
-    states.set(scene,{travel,target:prev.current,current:prev.current});
+    states.set(scene,{travel,current:prev.current,target:prev.current});
   });
-  updateTargets();
+  update();
 }
 
-function updateTargets(){
-  if(innerWidth<=900) return;
-
+function update(){
   const y=scrollY;
+  if(hero){
+    const h=Math.max(1,hero.offsetHeight*.9);
+    const p=clamp(y/h);
+    const e=p*(2-p);
+    const mobile=innerWidth<=980;
+    titleA?.style.setProperty('--txa',`${(-(mobile?innerWidth*.62:innerWidth*.28)*e).toFixed(1)}px`);
+    titleB?.style.setProperty('--txb',`${((mobile?innerWidth*.74:innerWidth*.32)*e).toFixed(1)}px`);
+  }
+  if(innerWidth<=980)return;
+
   const vh=innerHeight;
-
   scenes.forEach(scene=>{
-    const state=states.get(scene);
-    if(!state) return;
-
+    const state=states.get(scene);if(!state)return;
     const top=scene.offsetTop;
     const range=Math.max(1,scene.offsetHeight-vh);
     const p=clamp((y-top)/range);
     const e=smoothstep(p);
     const reverse=scene.dataset.direction==='reverse';
+    state.target=reverse?-state.travel*(1-e):-state.travel*e;
+    scene.querySelector('.progress span')?.style.setProperty('--p',p.toFixed(4));
 
-    state.target=reverse
-      ? -state.travel*(1-e)
-      : -state.travel*e;
-
-    const progress=scene.querySelector('.progress');
-    if(progress) progress.style.setProperty('--p',p.toFixed(4));
-
-    // Section hand-off is movement only: previous scene rises away,
-    // next scene enters slightly from below.
-    const handoffY=(p-.5)*24;
-    const edge=Math.abs(p-.5)*2;
-    const handoffScale=1-(edge*.012);
+    const edge=.12;
+    let handoff=0;
+    if(p<edge) handoff=34*(1-smoothstep(p/edge));
+    else if(p>1-edge) handoff=-34*smoothstep((p-(1-edge))/edge);
 
     const wrap=scene.querySelector('.track-wrap');
-    if(wrap){
-      wrap.style.transform=`translate3d(0,${handoffY.toFixed(1)}px,0) scale(${handoffScale.toFixed(4)})`;
-    }
-
     const chrome=scene.querySelector('.scene-chrome');
-    if(chrome){
-      chrome.style.transform=`translate3d(0,${(handoffY*.25).toFixed(1)}px,0)`;
-    }
-
-    const note=scene.querySelector('.category-note');
-    if(note){
-      note.style.transform=`translate3d(0,${(handoffY*.4).toFixed(1)}px,0)`;
-    }
-
-    const title=scene.querySelector('.scene-title');
+    const note=scene.querySelector('.scene-note');
+    const title=scene.querySelector('.scene-bg');
+    if(wrap)wrap.style.transform=`translate3d(0,${handoff.toFixed(1)}px,0)`;
+    if(chrome)chrome.style.transform=`translate3d(0,${(handoff*.22).toFixed(1)}px,0)`;
+    if(note)note.style.transform=`translate3d(0,${(handoff*.36).toFixed(1)}px,0)`;
     if(title){
-      const drift=(e-.5)*(reverse?-34:34);
-      const lift=handoffY*.32;
-      title.style.transform=`translate3d(${drift.toFixed(1)}px,${lift.toFixed(1)}px,0)`;
+      const drift=(e-.5)*(reverse?-30:30);
+      title.style.transform=`translate3d(${drift.toFixed(1)}px,${(handoff*.32).toFixed(1)}px,0)`;
     }
   });
 }
 
 function frame(){
-  if(innerWidth>900){
+  if(crossVisible&&innerWidth>980){
+    const targetX=mouseX+18,targetY=mouseY+18;
+    crossX+=(targetX-crossX)*.105;
+    crossY+=(targetY-crossY)*.105;
+    const scale=activeHover?1.25:1;
+    cursorCross.style.transform=`translate3d(${(crossX-7).toFixed(2)}px,${(crossY-7).toFixed(2)}px,0) scale(${scale})`;
+  }
+  if(innerWidth>980){
     scenes.forEach(scene=>{
-      const state=states.get(scene);
-      if(!state) return;
-
-      state.current+=(state.target-state.current)*.075;
-      if(Math.abs(state.target-state.current)<.05) state.current=state.target;
-
-      const track=scene.querySelector('.track');
-      if(track){
-        track.style.transform=`translate3d(${state.current.toFixed(2)}px,0,0)`;
-      }
+      const st=states.get(scene);if(!st)return;
+      st.current+=(st.target-st.current)*.11;
+      if(Math.abs(st.target-st.current)<.05)st.current=st.target;
+      scene.querySelector('.track').style.transform=`translate3d(${st.current.toFixed(2)}px,0,0)`;
     });
   }
   requestAnimationFrame(frame);
 }
 
 let resizeTimer;
-addEventListener('scroll',updateTargets,{passive:true});
-addEventListener('resize',()=>{
-  clearTimeout(resizeTimer);
-  resizeTimer=setTimeout(measure,100);
-});
+addEventListener('scroll',update,{passive:true});
+addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(measure,80)});
 addEventListener('load',measure);
-measure();
-frame();
-
-/* Refined hero + hand-off from category 01 to 02 */
-const refinedIntro=document.querySelector('.intro-refined');
-const introNameA=refinedIntro?.querySelector('.name-a');
-const introNameB=refinedIntro?.querySelector('.name-b');
-const firstScene=document.querySelector('.first-scene');
-const nextTease=firstScene?.querySelector('.next-tease');
-
-function updateRefinedDetails(){
-  if(refinedIntro){
-    const h=Math.max(1,refinedIntro.offsetHeight);
-    const p=clamp(scrollY/(h*.92));
-    const e=p*(2-p);
-    const mobile=innerWidth<=900;
-    const travelA=(mobile?innerWidth*.62:innerWidth*.26);
-    const travelB=(mobile?innerWidth*.72:innerWidth*.31);
-
-    if(introNameA) introNameA.style.setProperty('--hero-a',`${(-e*travelA).toFixed(1)}px`);
-    if(introNameB) introNameB.style.setProperty('--hero-b',`${(e*travelB).toFixed(1)}px`);
-  }
-
-  if(firstScene&&nextTease){
-    const top=firstScene.offsetTop;
-    const range=Math.max(1,firstScene.offsetHeight-innerHeight);
-    const p=clamp((scrollY-top)/range);
-    const reveal=clamp((p-.74)/.26);
-    nextTease.style.setProperty('--next',reveal.toFixed(4));
-  }
-}
-
-addEventListener('scroll',updateRefinedDetails,{passive:true});
-addEventListener('resize',updateRefinedDetails);
-updateRefinedDetails();
-
-/* Delayed print registration cross */
-const printCross=document.createElement('div');
-printCross.className='cursor-cross';
-printCross.innerHTML='<span></span>';
-document.body.appendChild(printCross);
-
-let pointerX=-100;
-let pointerY=-100;
-let crossX=-100;
-let crossY=-100;
-let pointerSeen=false;
-
-addEventListener('mousemove',e=>{
-  pointerX=e.clientX;
-  pointerY=e.clientY;
-
-  if(!pointerSeen){
-    pointerSeen=true;
-    crossX=pointerX+18;
-    crossY=pointerY+18;
-    printCross.classList.add('is-visible');
-  }
-},{passive:true});
-
-addEventListener('mouseleave',()=>{
-  pointerSeen=false;
-  printCross.classList.remove('is-visible');
-});
-
-function animatePrintCross(){
-  if(pointerSeen && innerWidth>900){
-    // Small permanent offset keeps the registration mark visible beside the native arrow,
-    // while lerp gives the delayed trailing feel.
-    const targetX=pointerX+18;
-    const targetY=pointerY+18;
-    crossX+=(targetX-crossX)*.105;
-    crossY+=(targetY-crossY)*.105;
-    printCross.style.transform=`translate3d(${(crossX-7).toFixed(2)}px,${(crossY-7).toFixed(2)}px,0)`;
-  }
-  requestAnimationFrame(animatePrintCross);
-}
-animatePrintCross();
+measure();update();frame();
