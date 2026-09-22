@@ -52,10 +52,20 @@ addEventListener('pointermove',e=>{
  if(!crossVisible){cx=mx;cy=my;crossVisible=true;cross.classList.add('is-visible');}
 },{passive:true});
 document.documentElement.addEventListener('pointerleave',()=>{crossVisible=false;cross.classList.remove('is-visible');});
-// Ambient grid: slow continuous waves, independent of the pointer.
+// Ambient waves with a soft cursor response on desktop.
 const grid=document.querySelector('.hero-grid');
 const ctx=grid?.getContext('2d');
 let gw=0,gh=0,lastGrid=0,gridDirty=true,phase=0;
+let gridX=0,gridY=0,pointerX=0,pointerY=0,pointerForce=0,pointerInside=false;
+hero.addEventListener('pointermove',e=>{
+ if(mobile.matches||!finePointer.matches||e.pointerType!=='mouse'||reducedMotion.matches)return;
+ const rect=hero.getBoundingClientRect();
+ pointerX=e.clientX-rect.left;pointerY=e.clientY-rect.top;
+ if(!pointerInside&&pointerForce<.01){gridX=pointerX;gridY=pointerY;}
+ pointerInside=true;
+},{passive:true});
+hero.addEventListener('pointerleave',()=>{pointerInside=false;});
+window.addEventListener('blur',()=>{pointerInside=false;});
 function sizeGrid(){
  if(!ctx)return;
  gw=hero.clientWidth;gh=hero.clientHeight;
@@ -68,10 +78,19 @@ function drawGrid(now,dt){
  if(reducedMotion.matches&&!gridDirty)return;
  if(now-lastGrid<33&&!gridDirty)return;
  phase+=reducedMotion.matches?0:(now-lastGrid<150?now-lastGrid:dt)*.00018;
+ const pointerEase=1-Math.exp(-Math.min(100,now-lastGrid)/180);
+ gridX+=(pointerX-gridX)*pointerEase;gridY+=(pointerY-gridY)*pointerEase;
+ const activePointer=pointerInside&&!mobile.matches&&finePointer.matches&&!reducedMotion.matches;
+ pointerForce+=((activePointer?1:0)-pointerForce)*pointerEase;
  lastGrid=now;gridDirty=false;
  ctx.clearRect(0,0,gw,gh);ctx.strokeStyle='rgba(160,165,170,.21)';ctx.lineWidth=.65;
- const cell=mobile.matches?56:72,amp=reducedMotion.matches?0:(mobile.matches?9:14);
- const point=(x,y)=>[x+amp*Math.sin(y/190+phase)*Math.cos(x/330-phase*.6),y+amp*Math.sin(x/230-phase*.8)*Math.cos(y/370+phase*.5)];
+ const cell=(mobile.matches?56:72)*.6,amp=reducedMotion.matches?0:(mobile.matches?9:14);
+ const point=(x,y)=>{
+  const dx=x-gridX,dy=y-gridY,d=Math.hypot(dx,dy);
+  const bend=28*pointerForce*Math.exp(-(d*d)/(190*190));
+  return [x+amp*Math.sin(y/190+phase)*Math.cos(x/330-phase*.6)+dx/Math.max(d,1)*bend,
+          y+amp*Math.sin(x/230-phase*.8)*Math.cos(y/370+phase*.5)+dy/Math.max(d,1)*bend];
+ };
  ctx.beginPath();
  for(let x=-cell;x<=gw+cell;x+=cell){for(let y=-cell;y<=gh+cell;y+=20){const p=point(x,y);if(y===-cell)ctx.moveTo(...p);else ctx.lineTo(...p);}}
  for(let y=-cell;y<=gh+cell;y+=cell){for(let x=-cell;x<=gw+cell;x+=20){const p=point(x,y);if(x===-cell)ctx.moveTo(...p);else ctx.lineTo(...p);}}
