@@ -50,7 +50,7 @@ function update(){
   if(hero){
     const h=Math.max(1,hero.offsetHeight*.9);
     const p=clamp(y/h);
-    const e=reducedMotion.matches?0:p*(2-p);
+    const e=(reducedMotion.matches||innerWidth<=980)?0:p*(2-p);
     const mobile=innerWidth<=980;
     titleA?.style.setProperty('--txa',`${(-(mobile?innerWidth*.62:innerWidth*.28)*e).toFixed(1)}px`);
     titleB?.style.setProperty('--txb',`${((mobile?innerWidth*.74:innerWidth*.32)*e).toFixed(1)}px`);
@@ -118,8 +118,9 @@ measure();update();
 // A restrained, elastic grey grid behind the portrait.
 const grid=document.querySelector('.hero-grid');
 const ctx=grid.getContext('2d');
-let gw=0,gh=0,gx=0,gy=0,gtx=0,gty=0,force=0,targetForce=0;
+let gw=0,gh=0,gx=0,gy=0,gtx=0,gty=0,force=0,targetForce=0,gridDirty=true;
 function sizeGrid(){
+ gridDirty=true;
  gw=hero.clientWidth;gh=hero.clientHeight;
  const dpr=Math.min(devicePixelRatio||1,2);
  grid.width=gw*dpr;grid.height=gh*dpr;
@@ -132,6 +133,8 @@ hero.addEventListener('pointermove',e=>{
 hero.addEventListener('pointerleave',()=>targetForce=0);
 function drawGrid(){
  if(hero.getBoundingClientRect().bottom<0)return;
+ if(innerWidth<=980&&!gridDirty)return;
+ gridDirty=false;
  gx+=(gtx-gx)*.055;gy+=(gty-gy)*.055;
  force+=((reducedMotion.matches?0:targetForce)-force)*.045;
  ctx.clearRect(0,0,gw,gh);ctx.strokeStyle='rgba(160,165,170,.19)';ctx.lineWidth=.65;
@@ -156,6 +159,10 @@ if('IntersectionObserver' in window){
   if(entry.isIntersecting){entry.target.classList.add('is-visible');reveal.unobserve(entry.target);}
  }),{threshold:.06});
  document.querySelectorAll('.scene-content').forEach(el=>{el.classList.add('reveal-ready');reveal.observe(el);});
+ if(innerWidth<=980&&!reducedMotion.matches){
+  const cards=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');cards.unobserve(entry.target);}}),{threshold:.04});
+  document.querySelectorAll('.work-link').forEach(el=>{el.classList.add('reveal-card');cards.observe(el);});
+ }
 }
 document.fonts.ready.then(measure);
 frame();
