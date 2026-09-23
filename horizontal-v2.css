@@ -295,3 +295,11 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
  .hero-title{max-width:none}
 }
 @media(prefers-reduced-motion:reduce){.scene-content.reveal-ready,.work-link.reveal-card{transition:none}}
+
+/* Direct messenger contacts. */
+.contact-links{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px}
+.contact-links .contact-button{margin-top:0;min-width:250px;justify-content:space-between}
+@media(max-width:980px){
+ .contact-links{flex-direction:column;gap:12px}
+ .contact-links .contact-button{min-width:0;width:100%;max-width:360px}
+}
