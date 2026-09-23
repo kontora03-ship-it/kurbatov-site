@@ -134,6 +134,24 @@ if('IntersectionObserver' in window){
   }
   observer.observe(el);
  });
+ let mobileInnerObserver;
+ function observeMobileContent(){
+  if(!mobile.matches||mobileInnerObserver)return;
+  mobileInnerObserver=new IntersectionObserver(entries=>{
+   for(const entry of entries)if(entry.isIntersecting){
+    entry.target.classList.add('is-visible');
+    mobileInnerObserver.unobserve(entry.target);
+   }
+  },{threshold:.04,rootMargin:'0px 0px -6% 0px'});
+  document.querySelectorAll('.scene .scene-chrome,.scene .scene-bg,.scene .scene-note,.work-link .card-media,.work-link .card-meta').forEach(el=>{
+   el.classList.add('reveal-inner');
+   const delay=el.classList.contains('scene-bg')?80:el.classList.contains('scene-note')?140:el.classList.contains('card-meta')?90:0;
+   el.style.setProperty('--inner-delay',`${delay}ms`);
+   mobileInnerObserver.observe(el);
+  });
+ }
+ observeMobileContent();
+ mobile.addEventListener('change',observeMobileContent);
 }
 measure();sizeGrid();
 document.fonts.ready.then(measure);
