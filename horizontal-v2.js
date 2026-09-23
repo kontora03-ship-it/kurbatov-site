@@ -30,7 +30,7 @@ function update(){
   const st=states.get(scene);if(!st||mobile.matches)continue;
   const p=clamp((scrollY-st.top)/Math.max(1,st.distance));
   st.target=-st.travel*(scene.dataset.direction==='reverse'?1-p:p);
-  st.targetHandoff=reducedMotion.matches||!st.travel?0:20*(1-clamp(p/.15))-20*clamp((p-.85)/.15);
+  st.targetHandoff=0;
   scene.querySelector('.progress span')?.style.setProperty('--p',String(p));
  }
 }
