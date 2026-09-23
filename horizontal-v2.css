@@ -244,3 +244,19 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
  .scene .scene-chrome{font-size:9px}
  .scene.is-static .track{width:100%;justify-content:center;padding:0 var(--pad)}
 }
+
+/* Soft studio light behind the portrait and the interactive grid. */
+.hero::before{
+ content:"";position:absolute;left:50%;top:62%;width:min(76vw,1100px);height:min(84vh,820px);
+ z-index:-1;pointer-events:none;transform:translate(-50%,-50%);
+ background:radial-gradient(ellipse at 48% 50%,rgba(113,144,163,.19) 0%,rgba(83,118,143,.11) 28%,rgba(53,77,97,.045) 49%,transparent 72%);
+ animation:hero-studio-light 24s ease-in-out infinite alternate;
+}
+@keyframes hero-studio-light{
+ from{transform:translate(-53%,-49%) scale(.94,1);opacity:.82}
+ to{transform:translate(-47%,-53%) scale(1.06,.94);opacity:1}
+}
+@media(max-width:980px){
+ .hero::before{top:clamp(310px,86vw,470px);width:140vw;height:650px;animation-duration:28s}
+}
+@media(prefers-reduced-motion:reduce){.hero::before{animation:none;opacity:.9}}
