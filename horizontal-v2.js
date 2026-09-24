@@ -11,9 +11,19 @@ const portrait=document.querySelector('.hero-portrait');
 const roleTrack=document.querySelector('.hero-role-track');
 const roleGroup=document.querySelector('.hero-role-group');
 function measureRole(){
+ const animation=roleTrack.getAnimations().find(a=>a.animationName==='hero-role-travel');
+ const timing=animation?.effect.getComputedTiming();
+ const oldDuration=timing?.duration;
+ const oldTime=animation?.currentTime;
  const phraseWidth=roleGroup.scrollWidth/6;
  const previousSpeed=(innerWidth+(mobile.matches?innerWidth:phraseWidth))/(mobile.matches?19:24);
- roleTrack.style.setProperty('--role-duration',`${(roleGroup.scrollWidth/(previousSpeed*.35)).toFixed(2)}s`);
+ const duration=Number((roleGroup.scrollWidth/(previousSpeed*.35)).toFixed(2));
+ roleTrack.style.setProperty('--role-duration',`${duration}s`);
+ // Preserve the current position in the loop when its duration changes.
+ if(animation&&typeof oldTime==='number'&&typeof oldDuration==='number'&&oldDuration>0){
+  const delay=Number(timing.delay)||0;
+  animation.currentTime=delay+(oldTime-delay)*duration*1000/oldDuration;
+ }
 }
 const scenes=[...document.querySelectorAll('.scene')];
 const states=new Map();
@@ -24,7 +34,10 @@ function measure(){
  if(mobile.matches){
   const portraitRect=portrait.getBoundingClientRect();
   heroRole.style.top=`${portraitRect.top-heroRect.top+portraitRect.height/2}px`;
- }else heroRole.style.removeProperty('top');
+ }else{
+  const surnameBottom=titleB.getBoundingClientRect().bottom-heroRect.top;
+  heroRole.style.top=`${surnameBottom+24}px`;
+ }
  const firstName=titleA.getBoundingClientRect(),lastName=titleB.getBoundingClientRect();
  const lightPadding=mobile.matches?18:34;
  const lightTop=Math.max(0,Math.min(firstName.top,lastName.top)-heroRect.top-lightPadding);
@@ -137,8 +150,7 @@ function frame(now){
  drawGrid(now,dt);raf=requestAnimationFrame(frame);
 }
 addEventListener('scroll',update,{passive:true});
-let resizeTimer;
-addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{measure();sizeGrid();},100);},{passive:true});
+addEventListener('resize',()=>{measure();sizeGrid();},{passive:true});
 addEventListener('pageshow',()=>{measure();sizeGrid();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!raf){lastTime=0;raf=requestAnimationFrame(frame);}});
 reducedMotion.addEventListener('change',()=>{gridDirty=true;update();});

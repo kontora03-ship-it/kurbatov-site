@@ -363,3 +363,6 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
  .scene .scene-bg.reveal-inner{opacity:.65;translate:none;transition:none}
  .scene.dark .scene-bg.reveal-inner{opacity:.7}
 }
+
+/* Keep the blue desktop marquee a fixed distance below the surname. */
+@media(min-width:981px){.hero-role{transform:none}}
