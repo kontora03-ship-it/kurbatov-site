@@ -6,11 +6,13 @@ const hero=document.querySelector('.hero');
 const titleA=document.querySelector('.title-a');
 const titleB=document.querySelector('.title-b');
 const heroLight=document.querySelector('.hero-light');
+const heroRole=document.querySelector('.hero-role');
+const portrait=document.querySelector('.hero-portrait');
 const roleTrack=document.querySelector('.hero-role-track');
 const roleGroup=document.querySelector('.hero-role-group');
 function measureRole(){
  const phraseWidth=roleGroup.scrollWidth/6;
- const previousSpeed=(innerWidth+phraseWidth)/(mobile.matches?19:24);
+ const previousSpeed=(innerWidth+(mobile.matches?innerWidth:phraseWidth))/(mobile.matches?19:24);
  roleTrack.style.setProperty('--role-duration',`${(roleGroup.scrollWidth/(previousSpeed*.35)).toFixed(2)}s`);
 }
 const scenes=[...document.querySelectorAll('.scene')];
@@ -19,6 +21,10 @@ let titleX=0,titleTarget=0;
 function measure(){
  measureRole();
  const heroRect=hero.getBoundingClientRect();
+ if(mobile.matches){
+  const portraitRect=portrait.getBoundingClientRect();
+  heroRole.style.top=`${portraitRect.top-heroRect.top+portraitRect.height/2}px`;
+ }else heroRole.style.removeProperty('top');
  const firstName=titleA.getBoundingClientRect(),lastName=titleB.getBoundingClientRect();
  const lightPadding=mobile.matches?18:34;
  const lightTop=Math.max(0,Math.min(firstName.top,lastName.top)-heroRect.top-lightPadding);
