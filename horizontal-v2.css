@@ -47,6 +47,7 @@ img{display:block;max-width:100%}
 .title-a,.title-b{font-size:clamp(118px,15.8vw,270px)}
 .title-a{margin-left:-.06em;margin-right:auto;color:#f4f3ef;transform:translate3d(var(--txa,0px),0,0)}
 .title-b{margin-left:auto;margin-right:-.06em;color:#f4f3ef;transform:translate3d(var(--txb,0px),0,0)}
+.hero-role{position:absolute;left:50%;top:67%;z-index:4;pointer-events:none;white-space:nowrap;color:var(--accent);font-size:clamp(13px,1.6vw,20px);font-weight:500;letter-spacing:.26em;line-height:1;opacity:.9;transform:translate3d(calc(-50% + var(--tx-role,0px)),-50%,0);will-change:transform}
 .hero-portrait{position:absolute;left:50%;bottom:-1vh;transform:translateX(-50%);z-index:6;margin:0;width:min(27vw,410px)}
 .hero-portrait img{width:100%;height:auto;filter:grayscale(1) contrast(1.04)}
 .hero-copy{position:absolute;left:var(--pad);bottom:95px;z-index:8;max-width:430px;display:grid;grid-template-columns:128px 1fr;gap:24px;align-items:start}
@@ -142,6 +143,7 @@ img{display:block;max-width:100%}
  .hero-title{position:relative;inset:auto;transform:none;line-height:.88;letter-spacing:-.075em;margin:36px 0 0;overflow:visible;flex:none}
  .hero-title span{width:auto;font-size:clamp(40px,13.2vw,110px);margin:0;will-change:transform}
  .hero-title .title-b{margin-top:8px;text-align:right}
+ .hero-role{top:clamp(245px,70vw,345px);font-size:clamp(10px,2.5vw,14px);letter-spacing:.13em}
  .hero-portrait{position:relative;inset:auto;transform:none;align-self:center;width:min(64vw,300px);height:clamp(250px,72vw,360px);margin:calc(-1 * clamp(20px,6vw,42px)) 0 0;overflow:hidden;flex:none}
  .hero-portrait img{width:100%;height:100%;object-fit:contain;object-position:center bottom;-webkit-mask-image:linear-gradient(to bottom,#000 80%,rgba(0,0,0,.65) 90%,transparent 100%);mask-image:linear-gradient(to bottom,#000 80%,rgba(0,0,0,.65) 90%,transparent 100%)}
  .hero-copy{position:relative;inset:auto;display:block;max-width:560px;margin:-8px 0 0;align-self:center;width:100%}
@@ -236,7 +238,7 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
  .contact footer span{max-width:220px}
  .contact footer a{white-space:nowrap;min-height:44px}
 }
-@media(prefers-reduced-motion:reduce){.hero-title span{transform:none!important}}
+@media(prefers-reduced-motion:reduce){.hero-title span{transform:none!important}.hero-role{transform:translate3d(-50%,-50%,0)!important}}
 @media(min-width:981px){
  .nav nav a{font-size:10px;min-height:44px;display:flex;align-items:center}
  .hero-topline{font-size:9px}
@@ -247,24 +249,24 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
 
 /* Soft studio light behind the portrait and the interactive grid. */
 .hero::before{
- content:"";position:absolute;left:50%;top:62%;width:min(76vw,1100px);height:min(84vh,820px);
+ content:"";position:absolute;left:50%;top:62%;width:200vw;height:160vh;
  z-index:0;pointer-events:none;transform:translate(-50%,-50%);
- background:radial-gradient(ellipse at 48% 50%,rgba(129,162,184,.44) 0%,rgba(91,133,161,.30) 28%,rgba(61,97,126,.14) 49%,transparent 72%);
+ background:radial-gradient(ellipse at 50% 50%,rgba(129,162,184,.38) 0%,rgba(91,133,161,.25) 19%,rgba(61,97,126,.10) 34%,transparent 56%);
  animation:hero-light-drift 20s ease-in-out infinite;
 }
 @keyframes hero-light-drift{
- 0%,100%{translate:-20% 4%;opacity:.62;filter:brightness(.84)}
- 13%{translate:12% -12%;opacity:1;filter:brightness(1.28)}
- 29%{translate:27% 7%;opacity:.70;filter:brightness(.92)}
- 45%{translate:-4% 13%;opacity:1;filter:brightness(1.32)}
- 62%{translate:-27% -8%;opacity:.55;filter:brightness(.78)}
- 79%{translate:5% -16%;opacity:.95;filter:brightness(1.2)}
- 91%{translate:19% 9%;opacity:.72;filter:brightness(.9)}
+ 0%,100%{translate:-8vw 2vh;opacity:.62;filter:brightness(.84)}
+ 13%{translate:5vw -6vh;opacity:1;filter:brightness(1.28)}
+ 29%{translate:10vw 4vh;opacity:.70;filter:brightness(.92)}
+ 45%{translate:-2vw 7vh;opacity:1;filter:brightness(1.32)}
+ 62%{translate:-10vw -4vh;opacity:.55;filter:brightness(.78)}
+ 79%{translate:2vw -8vh;opacity:.95;filter:brightness(1.2)}
+ 91%{translate:8vw 5vh;opacity:.72;filter:brightness(.9)}
 }
 @media(max-width:980px){
  .hero::before{
-  top:clamp(275px,76vw,420px);width:135vw;height:580px;animation-duration:16s;
-  background:radial-gradient(ellipse at 50% 50%,rgba(129,162,184,.51) 0%,rgba(91,133,161,.35) 26%,rgba(61,97,126,.16) 48%,transparent 74%);
+  top:clamp(275px,76vw,420px);width:200vw;height:900px;animation-duration:16s;
+  background:radial-gradient(ellipse at 50% 50%,rgba(129,162,184,.44) 0%,rgba(91,133,161,.29) 20%,rgba(61,97,126,.12) 35%,transparent 57%);
  }
  .hero-grid{z-index:1}
 }

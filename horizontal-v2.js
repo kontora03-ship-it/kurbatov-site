@@ -5,6 +5,7 @@ const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const hero=document.querySelector('.hero');
 const titleA=document.querySelector('.title-a');
 const titleB=document.querySelector('.title-b');
+const heroRole=document.querySelector('.hero-role');
 const scenes=[...document.querySelectorAll('.scene')];
 const states=new Map();
 let titleX=0,titleTarget=0;
@@ -105,6 +106,7 @@ function frame(now){
  const distance=innerWidth*(mobile.matches ? .7 : .3);
  titleA.style.setProperty('--txa',`${(-distance*titleX).toFixed(2)}px`);
  titleB.style.setProperty('--txb',`${(distance*titleX).toFixed(2)}px`);
+ heroRole.style.setProperty('--tx-role',`${(-innerWidth*(mobile.matches?.16:.18)*titleX).toFixed(2)}px`);
  if(!mobile.matches){for(const st of states.values()){
   st.current+= (st.target-st.current)*(reducedMotion.matches?1:ease);
   st.handoff+=(st.targetHandoff-st.handoff)*ease;
