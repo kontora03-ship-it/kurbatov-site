@@ -5,6 +5,7 @@ const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const hero=document.querySelector('.hero');
 const titleA=document.querySelector('.title-a');
 const titleB=document.querySelector('.title-b');
+const heroLight=document.querySelector('.hero-light');
 const roleTrack=document.querySelector('.hero-role-track');
 const roleGroup=document.querySelector('.hero-role-group');
 function measureRole(){
@@ -17,6 +18,13 @@ const states=new Map();
 let titleX=0,titleTarget=0;
 function measure(){
  measureRole();
+ const heroRect=hero.getBoundingClientRect();
+ const firstName=titleA.getBoundingClientRect(),lastName=titleB.getBoundingClientRect();
+ const lightPadding=mobile.matches?18:34;
+ const lightTop=Math.max(0,Math.min(firstName.top,lastName.top)-heroRect.top-lightPadding);
+ const lightBottom=Math.min(heroRect.height,Math.max(firstName.bottom,lastName.bottom)-heroRect.top+lightPadding);
+ heroLight.style.top=`${lightTop}px`;
+ heroLight.style.height=`${Math.max(1,lightBottom-lightTop)}px`;
  const vh=innerHeight;
  for(const scene of scenes){
   const track=scene.querySelector('.track');

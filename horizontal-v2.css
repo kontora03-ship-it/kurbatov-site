@@ -250,29 +250,31 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
  .scene.is-static .track{width:100%;justify-content:center;padding:0 var(--pad)}
 }
 
-/* Soft studio light behind the portrait and the interactive grid. */
-.hero::before{
- content:"";position:absolute;left:50%;top:62%;width:200vw;height:200vh;
- z-index:0;pointer-events:none;transform:translate(-50%,-50%);
- background:radial-gradient(ellipse 46vw 55vh at 50% 50%,rgba(141,175,200,.58) 0%,rgba(96,142,172,.38) 35%,rgba(61,97,126,.14) 68%,transparent 100%);
+/* The light travels inside the name's vertical area. */
+.hero-light{position:absolute;left:0;right:0;top:16%;height:52%;z-index:0;pointer-events:none;overflow:hidden;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 13%,#000 87%,transparent);mask-image:linear-gradient(to bottom,transparent,#000 13%,#000 87%,transparent)}
+.hero-light::before{
+ content:"";position:absolute;left:50%;top:50%;width:200vw;height:200vh;
+ transform:translate(-50%,-50%);
+ background:radial-gradient(ellipse 46vw 32vh at 50% 50%,rgba(141,175,200,.58) 0%,rgba(96,142,172,.38) 35%,rgba(61,97,126,.14) 68%,transparent 100%);
  animation:hero-light-drift 34.3s ease-in-out infinite;
 }
 @keyframes hero-light-drift{
- 0%,100%{translate:-48vw -52vh;opacity:.68;filter:brightness(.8)}
- 16%{translate:34vw -25vh;opacity:1;filter:brightness(1.08)}
- 34%{translate:-28vw 24vh;opacity:.74;filter:brightness(.9)}
- 52%{translate:38vw 18vh;opacity:1;filter:brightness(1.2)}
- 69%{translate:-39vw -10vh;opacity:.62;filter:brightness(.75)}
- 84%{translate:17vw -42vh;opacity:1;filter:brightness(1.04)}
+ 0%,100%{translate:-48vw -10vh;opacity:.68;filter:brightness(.8)}
+ 16%{translate:34vw -4vh;opacity:1;filter:brightness(1.08)}
+ 34%{translate:-28vw 9vh;opacity:.74;filter:brightness(.9)}
+ 52%{translate:38vw 7vh;opacity:1;filter:brightness(1.2)}
+ 69%{translate:-39vw -3vh;opacity:.62;filter:brightness(.75)}
+ 84%{translate:17vw -9vh;opacity:1;filter:brightness(1.04)}
 }
 @media(max-width:980px){
- .hero::before{
-  top:clamp(275px,76vw,420px);animation-duration:28.6s;
-  background:radial-gradient(ellipse 78vw 300px at 50% 50%,rgba(141,175,200,.54) 0%,rgba(96,142,172,.33) 35%,rgba(61,97,126,.12) 68%,transparent 100%);
+ .hero-light{top:125px;height:170px}
+ .hero-light::before{
+  animation-duration:28.6s;
+  background:radial-gradient(ellipse 78vw 110px at 50% 50%,rgba(141,175,200,.54) 0%,rgba(96,142,172,.33) 35%,rgba(61,97,126,.12) 68%,transparent 100%);
  }
  .hero-grid{z-index:1}
 }
-@media(prefers-reduced-motion:reduce){.hero::before{animation:none;translate:none;transform:translate(-50%,-50%);opacity:.9;filter:none}}
+@media(prefers-reduced-motion:reduce){.hero-light::before{animation:none;translate:none;transform:translate(-50%,-50%);opacity:.9;filter:none}}
 
 /* Shared edges and stable project rows. */
 .track{padding-inline:var(--pad)}
