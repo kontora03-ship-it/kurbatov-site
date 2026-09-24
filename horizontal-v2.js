@@ -10,7 +10,7 @@ const roleGroup=document.querySelector('.hero-role-group');
 function measureRole(){
  const phraseWidth=roleGroup.scrollWidth/6;
  const previousSpeed=(innerWidth+phraseWidth)/(mobile.matches?19:24);
- roleTrack.style.setProperty('--role-duration',`${(roleGroup.scrollWidth/(previousSpeed*.7)).toFixed(2)}s`);
+ roleTrack.style.setProperty('--role-duration',`${(roleGroup.scrollWidth/(previousSpeed*.35)).toFixed(2)}s`);
 }
 const scenes=[...document.querySelectorAll('.scene')];
 const states=new Map();
