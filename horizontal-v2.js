@@ -5,10 +5,18 @@ const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
 const hero=document.querySelector('.hero');
 const titleA=document.querySelector('.title-a');
 const titleB=document.querySelector('.title-b');
+const roleTrack=document.querySelector('.hero-role-track');
+const roleGroup=document.querySelector('.hero-role-group');
+function measureRole(){
+ const phraseWidth=roleGroup.scrollWidth/6;
+ const previousSpeed=(innerWidth+phraseWidth)/(mobile.matches?19:24);
+ roleTrack.style.setProperty('--role-duration',`${(roleGroup.scrollWidth/(previousSpeed*.7)).toFixed(2)}s`);
+}
 const scenes=[...document.querySelectorAll('.scene')];
 const states=new Map();
 let titleX=0,titleTarget=0;
 function measure(){
+ measureRole();
  const vh=innerHeight;
  for(const scene of scenes){
   const track=scene.querySelector('.track');
