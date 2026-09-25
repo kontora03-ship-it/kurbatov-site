@@ -89,6 +89,7 @@ addEventListener('pointermove',e=>{
 document.documentElement.addEventListener('pointerleave',()=>{crossVisible=false;cross.classList.remove('is-visible');});
 function createAmbientGrid(host,grid,inverted=false){
 const rgb=inverted?'95,90,85':'160,165,170';
+const gridOpacity=inverted?.9:1;
 const ctx=grid?.getContext('2d');
 let gw=0,gh=0,lastGrid=0,gridDirty=true,phase=0;
 // Sparse cell fills share the grid's deformation and animation clock.
@@ -120,7 +121,7 @@ function drawGrid(now,dt){
  const activePointer=pointerInside&&!mobile.matches&&finePointer.matches&&!reducedMotion.matches;
  pointerForce+=((activePointer?1:0)-pointerForce)*pointerEase;
  lastGrid=now;gridDirty=false;
- ctx.clearRect(0,0,gw,gh);ctx.strokeStyle=`rgba(${rgb},.21)`;ctx.lineWidth=.65;
+ ctx.clearRect(0,0,gw,gh);ctx.strokeStyle=`rgba(${rgb},${.21*gridOpacity})`;ctx.lineWidth=.65;
  const cell=(mobile.matches?56:72)*.6,amp=reducedMotion.matches?0:(mobile.matches?9:14);
  const point=(x,y)=>{
   const dx=x-gridX,dy=y-gridY,d=Math.hypot(dx,dy);
@@ -166,7 +167,7 @@ function drawGrid(now,dt){
    const distance=activePointer?Math.hypot(center[0]-pointerX,center[1]-pointerY):Infinity;
    const proximity=clamp((distance-80)/90);
    c.visibility+=(proximity-c.visibility)*(1-Math.exp(-gridDt/(proximity<c.visibility?70:700)));
-   ctx.fillStyle=`rgba(${rgb},${c.alpha*envelope*c.visibility})`;
+   ctx.fillStyle=`rgba(${rgb},${c.alpha*envelope*c.visibility*gridOpacity})`;
    ctx.beginPath();
    ctx.moveTo(...point(x,y));
    for(let i=1;i<=4;i++)ctx.lineTo(...point(x+cell*i/4,y));
