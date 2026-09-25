@@ -133,7 +133,7 @@ function drawGrid(now,dt){
  if(!reducedMotion.matches){
   cellClock+=gridDt*1.25;
   gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
-  const budget=Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)));
+  const budget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2);
   // Begin each section with staggered cycles, softly revealed on entry.
   const firstRow=Math.max(0,Math.floor(-rect.top/cell));
   const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
@@ -157,7 +157,7 @@ function drawGrid(now,dt){
    if(!nearPointer&&!gridCells.some(c=>c.col===col&&c.row===row)){
     gridCells.push({col,row,born:cellClock,life:5500+Math.random()*5500,alpha:.08+Math.random()*.06,visibility:1});
    }
-   nextCell=cellClock+110+Math.random()*240;
+   nextCell=cellClock+(110+Math.random()*240)/1.2;
   }
   for(const c of gridCells){
    const age=(cellClock-c.born)/c.life;
