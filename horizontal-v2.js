@@ -87,25 +87,16 @@ addEventListener('pointermove',e=>{
  if(!crossVisible){cx=mx;cy=my;crossVisible=true;cross.classList.add('is-visible');}
 },{passive:true});
 document.documentElement.addEventListener('pointerleave',()=>{crossVisible=false;cross.classList.remove('is-visible');});
-// Ambient waves with a soft cursor response on desktop.
-const grid=document.querySelector('.hero-grid');
+function createAmbientGrid(host,grid,inverted=false){
+const rgb=inverted?'95,90,85':'160,165,170';
 const ctx=grid?.getContext('2d');
 let gw=0,gh=0,lastGrid=0,gridDirty=true,phase=0;
 // Sparse cell fills share the grid's deformation and animation clock.
 let gridCells=[],cellClock=0,nextCell=0;
 let gridX=0,gridY=0,pointerX=0,pointerY=0,pointerForce=0,pointerInside=false;
-hero.addEventListener('pointermove',e=>{
- if(mobile.matches||!finePointer.matches||e.pointerType!=='mouse'||reducedMotion.matches)return;
- const rect=hero.getBoundingClientRect();
- pointerX=e.clientX-rect.left;pointerY=e.clientY-rect.top;
- if(!pointerInside&&pointerForce<.01){gridX=pointerX;gridY=pointerY;}
- pointerInside=true;
-},{passive:true});
-hero.addEventListener('pointerleave',()=>{pointerInside=false;});
-window.addEventListener('blur',()=>{pointerInside=false;});
 function sizeGrid(){
  if(!ctx)return;
- const width=hero.clientWidth,height=hero.clientHeight;
+ const width=host.clientWidth,height=host.clientHeight;
  if(width!==gw||height!==gh){gridCells=[];nextCell=cellClock;}
  gw=width;gh=height;
  const dpr=Math.min(devicePixelRatio||1,1.5);
@@ -113,7 +104,13 @@ function sizeGrid(){
  ctx.setTransform(dpr,0,0,dpr,0,0);gridDirty=true;
 }
 function drawGrid(now,dt){
- if(!ctx||hero.getBoundingClientRect().bottom<=0)return;
+ if(!ctx)return;
+ const rect=host.getBoundingClientRect();
+ if(rect.bottom<=0||rect.top>=innerHeight)return;
+ if(gw!==host.clientWidth||gh!==host.clientHeight||gridDirty)sizeGrid();
+ pointerX=ambientPointer.x-rect.left;pointerY=ambientPointer.y-rect.top;
+ pointerInside=ambientPointer.present&&pointerX>=0&&pointerX<=gw&&pointerY>=0&&pointerY<=gh;
+ if(pointerInside&&pointerForce<.01){gridX=pointerX;gridY=pointerY;}
  if(reducedMotion.matches&&!gridDirty)return;
  if(now-lastGrid<33&&!gridDirty)return;
  const gridDt=Math.min(100,now-lastGrid||dt);
@@ -123,7 +120,7 @@ function drawGrid(now,dt){
  const activePointer=pointerInside&&!mobile.matches&&finePointer.matches&&!reducedMotion.matches;
  pointerForce+=((activePointer?1:0)-pointerForce)*pointerEase;
  lastGrid=now;gridDirty=false;
- ctx.clearRect(0,0,gw,gh);ctx.strokeStyle='rgba(160,165,170,.21)';ctx.lineWidth=.65;
+ ctx.clearRect(0,0,gw,gh);ctx.strokeStyle=`rgba(${rgb},.21)`;ctx.lineWidth=.65;
  const cell=(mobile.matches?56:72)*.6,amp=reducedMotion.matches?0:(mobile.matches?9:14);
  const point=(x,y)=>{
   const dx=x-gridX,dy=y-gridY,d=Math.hypot(dx,dy);
@@ -153,7 +150,7 @@ function drawGrid(now,dt){
    const distance=activePointer?Math.hypot(center[0]-pointerX,center[1]-pointerY):Infinity;
    const proximity=clamp((distance-80)/90);
    c.visibility+=(proximity-c.visibility)*(1-Math.exp(-gridDt/(proximity<c.visibility?70:700)));
-   ctx.fillStyle=`rgba(160,165,170,${c.alpha*envelope*c.visibility})`;
+   ctx.fillStyle=`rgba(${rgb},${c.alpha*envelope*c.visibility})`;
    ctx.beginPath();
    ctx.moveTo(...point(x,y));
    for(let i=1;i<=4;i++)ctx.lineTo(...point(x+cell*i/4,y));
@@ -168,6 +165,24 @@ function drawGrid(now,dt){
  for(let y=-cell;y<=gh+cell;y+=cell){for(let x=-cell;x<=gw+cell;x+=20){const p=point(x,y);if(x===-cell)ctx.moveTo(...p);else ctx.lineTo(...p);}}
  ctx.stroke();
 }
+ return {draw:drawGrid,invalidate(){gridDirty=true;},host};
+}
+const ambientPointer={x:0,y:0,present:false};
+addEventListener('pointermove',e=>{
+ if(e.pointerType!=='mouse')return;
+ ambientPointer.x=e.clientX;ambientPointer.y=e.clientY;ambientPointer.present=true;
+},{passive:true});
+document.documentElement.addEventListener('pointerleave',()=>{ambientPointer.present=false;});
+addEventListener('blur',()=>{ambientPointer.present=false;});
+const ambientGrids=[createAmbientGrid(hero,document.querySelector('.hero-grid'))];
+for(const section of document.querySelectorAll('.scene,.contact')){
+ const host=section.querySelector('.pin')||section;
+ const canvas=document.createElement('canvas');
+ canvas.className='section-grid';canvas.setAttribute('aria-hidden','true');host.prepend(canvas);
+ ambientGrids.push(createAmbientGrid(host,canvas,section.classList.contains('light')||section.classList.contains('contact')));
+}
+function sizeGrid(){for(const grid of ambientGrids)grid.invalidate();}
+function drawGrid(now,dt){for(const grid of ambientGrids)grid.draw(now,dt);}
 let lastTime=0,raf=0;
 function frame(now){
  if(document.hidden){raf=0;return;}
@@ -190,8 +205,11 @@ addEventListener('scroll',update,{passive:true});
 addEventListener('resize',()=>{measure();sizeGrid();},{passive:true});
 addEventListener('pageshow',()=>{measure();sizeGrid();});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!raf){lastTime=0;raf=requestAnimationFrame(frame);}});
-reducedMotion.addEventListener('change',()=>{gridDirty=true;update();});
-if('ResizeObserver' in window)new ResizeObserver(sizeGrid).observe(hero);
+reducedMotion.addEventListener('change',()=>{sizeGrid();update();});
+if('ResizeObserver' in window){
+ const gridObserver=new ResizeObserver(sizeGrid);
+ for(const grid of ambientGrids)gridObserver.observe(grid.host);
+}
 if('IntersectionObserver' in window){
  const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}},{threshold:.04,rootMargin:'0px 0px -8% 0px'});
  document.querySelectorAll('.scene-content,.work-link,.contact > .contact-kicker,.contact > h2,.contact > p,.contact-links,.contact footer').forEach(el=>{

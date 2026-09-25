@@ -366,3 +366,10 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
 
 /* Keep the blue desktop marquee a fixed distance below the surname. */
 @media(min-width:981px){.hero-role{transform:none}}
+
+/* Shared ambient grid sits below each section's content. */
+.scene .pin,.contact{isolation:isolate}
+.section-grid{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.scene-content{z-index:1}
+.contact{position:relative;overflow:hidden}
+.contact > :not(.section-grid){position:relative;z-index:1}
