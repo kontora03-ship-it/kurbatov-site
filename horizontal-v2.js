@@ -91,6 +91,8 @@ document.documentElement.addEventListener('pointerleave',()=>{crossVisible=false
 const grid=document.querySelector('.hero-grid');
 const ctx=grid?.getContext('2d');
 let gw=0,gh=0,lastGrid=0,gridDirty=true,phase=0;
+// Sparse cell fills share the grid's deformation and animation clock.
+let gridCells=[],cellClock=0,nextCell=0;
 let gridX=0,gridY=0,pointerX=0,pointerY=0,pointerForce=0,pointerInside=false;
 hero.addEventListener('pointermove',e=>{
  if(mobile.matches||!finePointer.matches||e.pointerType!=='mouse'||reducedMotion.matches)return;
@@ -103,7 +105,9 @@ hero.addEventListener('pointerleave',()=>{pointerInside=false;});
 window.addEventListener('blur',()=>{pointerInside=false;});
 function sizeGrid(){
  if(!ctx)return;
- gw=hero.clientWidth;gh=hero.clientHeight;
+ const width=hero.clientWidth,height=hero.clientHeight;
+ if(width!==gw||height!==gh){gridCells=[];nextCell=cellClock;}
+ gw=width;gh=height;
  const dpr=Math.min(devicePixelRatio||1,1.5);
  grid.width=Math.round(gw*dpr);grid.height=Math.round(gh*dpr);
  ctx.setTransform(dpr,0,0,dpr,0,0);gridDirty=true;
@@ -112,6 +116,7 @@ function drawGrid(now,dt){
  if(!ctx||hero.getBoundingClientRect().bottom<=0)return;
  if(reducedMotion.matches&&!gridDirty)return;
  if(now-lastGrid<33&&!gridDirty)return;
+ const gridDt=Math.min(100,now-lastGrid||dt);
  phase+=reducedMotion.matches?0:(now-lastGrid<150?now-lastGrid:dt)*.00018;
  const pointerEase=1-Math.exp(-Math.min(100,now-lastGrid)/180);
  gridX+=(pointerX-gridX)*pointerEase;gridY+=(pointerY-gridY)*pointerEase;
@@ -126,6 +131,38 @@ function drawGrid(now,dt){
   return [x+amp*Math.sin(y/190+phase)*Math.cos(x/330-phase*.6)+dx/Math.max(d,1)*bend,
           y+amp*Math.sin(x/230-phase*.8)*Math.cos(y/370+phase*.5)+dy/Math.max(d,1)*bend];
  };
+ // Fills stay inside the moving cells, underneath the fine grid lines.
+ if(!reducedMotion.matches){
+  cellClock+=gridDt;
+  gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
+  const budget=Math.min(26,Math.max(5,Math.round(gw*gh/(cell*cell)*.018)));
+  if(cellClock>=nextCell&&gridCells.length<budget){
+   const col=Math.floor(Math.random()*Math.ceil(gw/cell));
+   const row=Math.floor(Math.random()*Math.ceil(gh/cell));
+   const center=point((col+.5)*cell,(row+.5)*cell);
+   const nearPointer=activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170;
+   if(!nearPointer&&!gridCells.some(c=>c.col===col&&c.row===row)){
+    gridCells.push({col,row,born:cellClock,life:5500+Math.random()*5500,alpha:.035+Math.random()*.03,visibility:1});
+   }
+   nextCell=cellClock+220+Math.random()*480;
+  }
+  for(const c of gridCells){
+   const age=(cellClock-c.born)/c.life;
+   const envelope=Math.pow(Math.sin(Math.PI*age),2);
+   const x=c.col*cell,y=c.row*cell,center=point(x+cell/2,y+cell/2);
+   const distance=activePointer?Math.hypot(center[0]-pointerX,center[1]-pointerY):Infinity;
+   const proximity=clamp((distance-80)/90);
+   c.visibility+=(proximity-c.visibility)*(1-Math.exp(-gridDt/(proximity<c.visibility?70:700)));
+   ctx.fillStyle=`rgba(160,165,170,${c.alpha*envelope*c.visibility})`;
+   ctx.beginPath();
+   ctx.moveTo(...point(x,y));
+   for(let i=1;i<=4;i++)ctx.lineTo(...point(x+cell*i/4,y));
+   for(let i=1;i<=4;i++)ctx.lineTo(...point(x+cell,y+cell*i/4));
+   for(let i=1;i<=4;i++)ctx.lineTo(...point(x+cell-cell*i/4,y+cell));
+   for(let i=1;i<=4;i++)ctx.lineTo(...point(x,y+cell-cell*i/4));
+   ctx.closePath();ctx.fill();
+  }
+ }
  ctx.beginPath();
  for(let x=-cell;x<=gw+cell;x+=cell){for(let y=-cell;y<=gh+cell;y+=20){const p=point(x,y);if(y===-cell)ctx.moveTo(...p);else ctx.lineTo(...p);}}
  for(let y=-cell;y<=gh+cell;y+=cell){for(let x=-cell;x<=gw+cell;x+=20){const p=point(x,y);if(x===-cell)ctx.moveTo(...p);else ctx.lineTo(...p);}}
