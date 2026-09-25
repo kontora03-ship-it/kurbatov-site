@@ -95,6 +95,14 @@ let gw=0,gh=0,lastGrid=0,gridDirty=true,phase=0;
 // Sparse cell fills share the grid's deformation and animation clock.
 let gridCells=[],cellClock=0,nextCell=0,seeded=false,cellStarted=0;
 let gridX=0,gridY=0,pointerX=0,pointerY=0,pointerForce=0,pointerInside=false;
+// These text blocks move with the horizontal tracks and scroll entrances.
+const protectedText=[...host.querySelectorAll('.hero-topline,.hero-copy,.hero-categories,.hero-foot,.hero-role,.scene-chrome,.scene-note,.card-meta,.text-card span,.text-card small,.contact-kicker,.contact > p,.contact-links,footer')];
+function cellAppearance(){
+ const choice=Math.random();
+ if(choice<.10)return {rgb:'41,151,255',alpha:.65,accent:true};
+ if(choice<.17)return {rgb:inverted?'0,0,0':'255,255,255',alpha:1,accent:true};
+ return {rgb,alpha:.08+Math.random()*.06,accent:false};
+}
 function sizeGrid(){
  if(!ctx)return;
  const width=host.clientWidth,height=host.clientHeight;
@@ -131,7 +139,7 @@ function drawGrid(now,dt){
  };
  // Fills stay inside the moving cells, underneath the fine grid lines.
  if(!reducedMotion.matches){
-  cellClock+=gridDt*1.25;
+  cellClock+=gridDt*1.625;
   gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
   const budget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2);
   // Begin each section with staggered cycles, softly revealed on entry.
@@ -146,7 +154,7 @@ function drawGrid(now,dt){
     if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
     if(gridCells.some(c=>c.col===col&&c.row===row))continue;
     const life=5500+Math.random()*5500;
-    gridCells.push({col,row,born:cellClock-life*(.12+Math.random()*.6),life,alpha:.08+Math.random()*.06,visibility:1});
+    gridCells.push({col,row,born:cellClock-life*(.12+Math.random()*.6),life,...cellAppearance(),visibility:1});
    }
   }
   if(cellClock>=nextCell&&gridCells.length<budget){
@@ -155,10 +163,12 @@ function drawGrid(now,dt){
    const center=point((col+.5)*cell,(row+.5)*cell);
    const nearPointer=activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170;
    if(!nearPointer&&!gridCells.some(c=>c.col===col&&c.row===row)){
-    gridCells.push({col,row,born:cellClock,life:5500+Math.random()*5500,alpha:.08+Math.random()*.06,visibility:1});
+    gridCells.push({col,row,born:cellClock,life:5500+Math.random()*5500,...cellAppearance(),visibility:1});
    }
    nextCell=cellClock+(110+Math.random()*240)/1.2;
   }
+  // Read current bounds once per frame so moving/revealing captions stay protected.
+  const textBounds=gridCells.some(c=>c.accent)?protectedText.map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height):[];
   for(const c of gridCells){
    const age=(cellClock-c.born)/c.life;
    const entrance=clamp((cellClock-cellStarted)/1000);
@@ -167,7 +177,10 @@ function drawGrid(now,dt){
    const distance=activePointer?Math.hypot(center[0]-pointerX,center[1]-pointerY):Infinity;
    const proximity=clamp((distance-80)/90);
    c.visibility+=(proximity-c.visibility)*(1-Math.exp(-gridDt/(proximity<c.visibility?70:700)));
-   ctx.fillStyle=`rgba(${rgb},${c.alpha*envelope*c.visibility*gridOpacity})`;
+   // Include maximum grid distortion and a quiet margin around small text.
+   const padding=amp+28+12;
+   if(c.accent&&textBounds.some(r=>x+cell+padding>r.left-rect.left&&x-padding<r.right-rect.left&&y+cell+padding>r.top-rect.top&&y-padding<r.bottom-rect.top))continue;
+   ctx.fillStyle=`rgba(${c.rgb},${c.alpha*envelope*c.visibility*(c.accent?1:gridOpacity)})`;
    ctx.beginPath();
    ctx.moveTo(...point(x,y));
    for(let i=1;i<=4;i++)ctx.lineTo(...point(x+cell*i/4,y));
