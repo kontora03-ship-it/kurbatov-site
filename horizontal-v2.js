@@ -135,16 +135,16 @@ function drawGrid(now,dt){
  if(!reducedMotion.matches){
   cellClock+=gridDt;
   gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
-  const budget=Math.min(26,Math.max(5,Math.round(gw*gh/(cell*cell)*.018)));
+  const budget=Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)));
   if(cellClock>=nextCell&&gridCells.length<budget){
    const col=Math.floor(Math.random()*Math.ceil(gw/cell));
    const row=Math.floor(Math.random()*Math.ceil(gh/cell));
    const center=point((col+.5)*cell,(row+.5)*cell);
    const nearPointer=activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170;
    if(!nearPointer&&!gridCells.some(c=>c.col===col&&c.row===row)){
-    gridCells.push({col,row,born:cellClock,life:5500+Math.random()*5500,alpha:.035+Math.random()*.03,visibility:1});
+    gridCells.push({col,row,born:cellClock,life:5500+Math.random()*5500,alpha:.08+Math.random()*.06,visibility:1});
    }
-   nextCell=cellClock+220+Math.random()*480;
+   nextCell=cellClock+110+Math.random()*240;
   }
   for(const c of gridCells){
    const age=(cellClock-c.born)/c.life;
