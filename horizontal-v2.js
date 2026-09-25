@@ -92,12 +92,12 @@ const rgb=inverted?'95,90,85':'160,165,170';
 const ctx=grid?.getContext('2d');
 let gw=0,gh=0,lastGrid=0,gridDirty=true,phase=0;
 // Sparse cell fills share the grid's deformation and animation clock.
-let gridCells=[],cellClock=0,nextCell=0;
+let gridCells=[],cellClock=0,nextCell=0,seeded=false,cellStarted=0;
 let gridX=0,gridY=0,pointerX=0,pointerY=0,pointerForce=0,pointerInside=false;
 function sizeGrid(){
  if(!ctx)return;
  const width=host.clientWidth,height=host.clientHeight;
- if(width!==gw||height!==gh){gridCells=[];nextCell=cellClock;}
+ if(width!==gw||height!==gh){gridCells=[];nextCell=cellClock;seeded=false;}
  gw=width;gh=height;
  const dpr=Math.min(devicePixelRatio||1,1.5);
  grid.width=Math.round(gw*dpr);grid.height=Math.round(gh*dpr);
@@ -130,12 +130,27 @@ function drawGrid(now,dt){
  };
  // Fills stay inside the moving cells, underneath the fine grid lines.
  if(!reducedMotion.matches){
-  cellClock+=gridDt;
+  cellClock+=gridDt*1.25;
   gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
   const budget=Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)));
+  // Begin each section with staggered cycles, softly revealed on entry.
+  const firstRow=Math.max(0,Math.floor(-rect.top/cell));
+  const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
+  if(!seeded){
+   seeded=true;cellStarted=cellClock;
+   for(let i=0;i<Math.ceil(budget*.65);i++){
+    const col=Math.floor(Math.random()*Math.ceil(gw/cell));
+    const row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
+    const center=point((col+.5)*cell,(row+.5)*cell);
+    if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
+    if(gridCells.some(c=>c.col===col&&c.row===row))continue;
+    const life=5500+Math.random()*5500;
+    gridCells.push({col,row,born:cellClock-life*(.12+Math.random()*.6),life,alpha:.08+Math.random()*.06,visibility:1});
+   }
+  }
   if(cellClock>=nextCell&&gridCells.length<budget){
    const col=Math.floor(Math.random()*Math.ceil(gw/cell));
-   const row=Math.floor(Math.random()*Math.ceil(gh/cell));
+   const row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
    const center=point((col+.5)*cell,(row+.5)*cell);
    const nearPointer=activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170;
    if(!nearPointer&&!gridCells.some(c=>c.col===col&&c.row===row)){
@@ -145,7 +160,8 @@ function drawGrid(now,dt){
   }
   for(const c of gridCells){
    const age=(cellClock-c.born)/c.life;
-   const envelope=Math.pow(Math.sin(Math.PI*age),2);
+   const entrance=clamp((cellClock-cellStarted)/1000);
+   const envelope=Math.pow(Math.sin(Math.PI*age),2)*entrance*entrance*(3-2*entrance);
    const x=c.col*cell,y=c.row*cell,center=point(x+cell/2,y+cell/2);
    const distance=activePointer?Math.hypot(center[0]-pointerX,center[1]-pointerY):Infinity;
    const proximity=clamp((distance-80)/90);
