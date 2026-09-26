@@ -289,3 +289,45 @@ if('IntersectionObserver' in window){
 measure();sizeGrid();
 document.fonts.ready.then(measure);
 raf=requestAnimationFrame(frame);
+
+// Save the originating card and restore it after returning from a case.
+const portfolioReturnKey='kurbatov-portfolio-return';
+document.addEventListener('click',e=>{
+ const card=e.target.closest('a.work-link');if(!card)return;
+ const url=new URL(location.href);url.pathname=url.pathname.replace(/\/$/,'/index.html');
+ const record={url:url.href,y:scrollY,width:innerWidth,height:innerHeight,card:card.getAttribute('href'),offset:card.getBoundingClientRect().top,time:Date.now()};
+ try{sessionStorage.setItem(portfolioReturnKey,JSON.stringify(record));}catch{}
+ if(!e.metaKey&&!e.ctrlKey&&!e.shiftKey&&!e.altKey&&e.button===0)history.replaceState({...history.state,portfolioReturn:record},'');
+});
+function restorePortfolio(event){
+ const url=new URL(location.href);
+ const explicit=url.searchParams.has('portfolio-return');
+ const navigation=performance.getEntriesByType('navigation')[0];
+ let record=history.state?.portfolioReturn;
+ if(explicit){try{record=JSON.parse(sessionStorage.getItem(portfolioReturnKey));}catch{}}
+ if(!record||(!explicit&&!event?.persisted&&navigation?.type!=='back_forward'))return;
+ if(explicit){url.searchParams.delete('portfolio-return');history.replaceState({...history.state,portfolioReturn:record},'',url);}
+ const card=[...document.querySelectorAll('a.work-link')].find(el=>el.getAttribute('href')===record.card);
+ function restore(){
+  measure();
+  let y=record.y;
+  if(card&&(record.width!==innerWidth||record.height!==innerHeight)){
+   const scene=card.closest('.scene'),st=states.get(scene);
+   if(mobile.matches)y=scrollY+card.getBoundingClientRect().top-Math.min(record.offset,innerHeight*.3);
+   else if(st?.travel){
+    const x=clamp(card.offsetLeft-innerWidth*.07,0,st.travel);
+    const p=scene.dataset.direction==='reverse'?1-x/st.travel:x/st.travel;
+    y=st.top+p*st.distance;
+   }else if(scene)y=scene.offsetTop;
+  }
+  if(card){
+   card.classList.add('is-visible');
+   card.closest('.scene-content')?.classList.add('is-visible');
+   card.querySelectorAll('.reveal-inner').forEach(el=>el.classList.add('is-visible'));
+  }
+  scrollTo({top:Math.max(0,y),behavior:'instant'});update();
+  for(const st of states.values()){st.current=st.target;st.track.style.transform=`translate3d(${st.current}px,0,0)`;}
+ }
+ document.fonts.ready.then(()=>requestAnimationFrame(restore));
+}
+addEventListener('pageshow',restorePortfolio);
