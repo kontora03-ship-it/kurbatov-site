@@ -159,9 +159,32 @@ function drawGrid(now,dt){
   const portraitBounds=host.querySelector('.hero-portrait')?.getBoundingClientRect();
   const padding=amp+28*pointerForce+12;
   const overlaps=(x,y,r)=>x+cell+padding>r.left-rect.left&&x-padding<r.right-rect.left&&y+cell+padding>r.top-rect.top&&y-padding<r.bottom-rect.top;
-  const blocked=(x,y)=>textBounds.some(r=>overlaps(x,y,r))||(portraitBounds&&overlaps(x,y,portraitBounds));
+  // The image itself hides the grid; do not reserve an extra empty halo around it.
+  const onPortrait=(x,y)=>portraitBounds&&x+cell>portraitBounds.left-rect.left&&x<portraitBounds.right-rect.left&&y+cell>portraitBounds.top-rect.top&&y<portraitBounds.bottom-rect.top;
+  const blocked=(x,y)=>textBounds.some(r=>overlaps(x,y,r))||onPortrait(x,y);
   function spawnCell(staggered=false){
-   const appearance=cellAppearance(budget);
+   let appearance=cellAppearance(budget);
+   let side=null,sideCells=[];
+   if(portraitBounds&&host===hero){
+    const left=portraitBounds.left-rect.left,right=portraitBounds.right-rect.left;
+    const top=Math.max(0,portraitBounds.top-rect.top),bottom=Math.min(gh,portraitBounds.bottom-rect.top);
+    const missing=['left','right'].filter(name=>!gridCells.some(c=>c.side===name));
+    for(const name of missing){
+     for(let row=firstRow;row<lastRow;row++){
+      const y=row*cell;if(y<top||y+cell>bottom)continue;
+      const from=name==='left'?Math.max(0,Math.ceil((left-cell*4)/cell)):Math.ceil(right/cell);
+      const to=name==='left'?Math.floor(left/cell)-1:Math.min(Math.floor(gw/cell)-1,Math.floor((right+cell*4)/cell));
+      for(let col=from;col<=to;col++){
+       const x=col*cell,center=point(x+cell/2,y+cell/2);
+       if(blocked(x,y)||gridCells.some(c=>c.col===col&&c.row===row))continue;
+       if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
+       sideCells.push({col,row});
+      }
+     }
+     if(sideCells.length){side=name;break;}
+    }
+    if(side)appearance={kind:'solid',rgb:'255,255,255',alpha:1,accent:true};
+   }
    // Prefer a band around the portrait; retain a uniform fallback for crowded layouts.
    const nearPortrait=portraitBounds&&Math.random()<.65;
    for(let attempt=0;attempt<100;attempt++){
@@ -178,6 +201,10 @@ function drawGrid(now,dt){
       row=Math.floor((top+Math.random()*(bottom-top))/cell);
      }
     }
+    if(side){
+     const candidate=sideCells[Math.floor(Math.random()*sideCells.length)];
+     col=candidate.col;row=candidate.row;
+    }
     const x=col*cell,y=row*cell;
     if(x+cell>gw||y+cell>gh)continue;
     if(blocked(x,y))continue;
@@ -185,7 +212,7 @@ function drawGrid(now,dt){
     if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
     if(gridCells.some(c=>c.col===col&&c.row===row))continue;
     const life=5500+Math.random()*5500;
-    gridCells.push({col,row,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
+    gridCells.push({col,row,side,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
     return;
    }
   }
