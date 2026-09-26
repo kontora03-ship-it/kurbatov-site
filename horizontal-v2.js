@@ -107,7 +107,7 @@ while(textWalker.nextNode()){
 function cellAppearance(budget){
  // More frequent white accents in the mobile hero's available cells.
  const mobileHero=host===hero&&mobile.matches;
- const solidCount=mobileHero?Math.max(3,Math.round(budget*.20)):Math.max(1,Math.round(budget*.07));
+ const solidCount=mobileHero?Math.max(4,Math.round(budget*.25)):Math.max(1,Math.ceil(budget*.10));
  if(gridCells.filter(c=>c.kind==='solid').length<solidCount)return {kind:'solid',rgb:inverted?'0,0,0':'255,255,255',alpha:1,accent:true};
  if(gridCells.filter(c=>c.kind==='blue').length<Math.max(1,Math.round(budget*.10)))return {kind:'blue',rgb:'41,151,255',alpha:.65,accent:true};
  return {kind:'quiet',rgb,alpha:.08+Math.random()*.06,accent:false};
@@ -150,7 +150,7 @@ function drawGrid(now,dt){
  if(!reducedMotion.matches){
   cellClock+=gridDt*2.1125;
   gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
-  const budget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2);
+  const budget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2*(host===hero?1.25:1));
   // Begin each section with staggered cycles, softly revealed on entry.
   const firstRow=Math.max(0,Math.floor(-rect.top/cell));
   const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
@@ -162,9 +162,22 @@ function drawGrid(now,dt){
   const blocked=(x,y)=>textBounds.some(r=>overlaps(x,y,r))||(portraitBounds&&overlaps(x,y,portraitBounds));
   function spawnCell(staggered=false){
    const appearance=cellAppearance(budget);
-   for(let attempt=0;attempt<80;attempt++){
-    const col=Math.floor(Math.random()*Math.ceil(gw/cell));
-    const row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
+   // Prefer a band around the portrait; retain a uniform fallback for crowded layouts.
+   const nearPortrait=portraitBounds&&Math.random()<.65;
+   for(let attempt=0;attempt<100;attempt++){
+    let col=Math.floor(Math.random()*Math.ceil(gw/cell));
+    let row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
+    if(nearPortrait&&attempt<70){
+     const band=cell*(mobile.matches?3:4);
+     const left=Math.max(0,portraitBounds.left-rect.left-band);
+     const right=Math.min(gw,portraitBounds.right-rect.left+band);
+     const top=Math.max(firstRow*cell,portraitBounds.top-rect.top-band);
+     const bottom=Math.min(lastRow*cell,portraitBounds.bottom-rect.top+band);
+     if(bottom>top&&right>left){
+      col=Math.floor((left+Math.random()*(right-left))/cell);
+      row=Math.floor((top+Math.random()*(bottom-top))/cell);
+     }
+    }
     const x=col*cell,y=row*cell;
     if(x+cell>gw||y+cell>gh)continue;
     if(blocked(x,y))continue;
@@ -182,7 +195,7 @@ function drawGrid(now,dt){
   }
   if(cellClock>=nextCell&&gridCells.length<budget){
    spawnCell();
-   nextCell=cellClock+(110+Math.random()*240)/1.2;
+   nextCell=cellClock+(110+Math.random()*240)/(host===hero?1.56:1.2);
   }
   for(const c of gridCells){
    const age=(cellClock-c.born)/c.life;
