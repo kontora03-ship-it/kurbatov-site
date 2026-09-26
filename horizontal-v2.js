@@ -105,8 +105,10 @@ while(textWalker.nextNode()){
  const range=document.createRange();range.selectNodeContents(node);protectedText.push(range);
 }
 function cellAppearance(budget){
- // Maintain the requested share instead of relying on rare random rolls.
- if(gridCells.filter(c=>c.kind==='solid').length<Math.max(1,Math.round(budget*.07)))return {kind:'solid',rgb:inverted?'0,0,0':'255,255,255',alpha:1,accent:true};
+ // More frequent white accents in the mobile hero's available cells.
+ const mobileHero=host===hero&&mobile.matches;
+ const solidCount=mobileHero?Math.max(3,Math.round(budget*.20)):Math.max(1,Math.round(budget*.07));
+ if(gridCells.filter(c=>c.kind==='solid').length<solidCount)return {kind:'solid',rgb:inverted?'0,0,0':'255,255,255',alpha:1,accent:true};
  if(gridCells.filter(c=>c.kind==='blue').length<Math.max(1,Math.round(budget*.10)))return {kind:'blue',rgb:'41,151,255',alpha:.65,accent:true};
  return {kind:'quiet',rgb,alpha:.08+Math.random()*.06,accent:false};
 }
