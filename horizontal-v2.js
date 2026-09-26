@@ -96,7 +96,14 @@ let gw=0,gh=0,lastGrid=0,gridDirty=true,phase=0;
 let gridCells=[],cellClock=0,nextCell=0,seeded=false,cellStarted=0;
 let gridX=0,gridY=0,pointerX=0,pointerY=0,pointerForce=0,pointerInside=false;
 // These text blocks move with the horizontal tracks and scroll entrances.
-const protectedText=[...host.querySelectorAll('.hero-topline,.hero-copy,.hero-categories,.hero-foot,.hero-role,.scene-chrome,.scene-note,.card-meta,.text-card span,.text-card small,.contact-kicker,.contact > p,.contact-links,footer')];
+// Protect every rendered text fragment, including large headings and nested labels.
+const protectedText=[];
+const textWalker=document.createTreeWalker(host,NodeFilter.SHOW_TEXT);
+while(textWalker.nextNode()){
+ const node=textWalker.currentNode;
+ if(!node.textContent.trim()||node.parentElement.closest('script,style,canvas'))continue;
+ const range=document.createRange();range.selectNodeContents(node);protectedText.push(range);
+}
 function cellAppearance(budget){
  // Maintain the requested share instead of relying on rare random rolls.
  if(gridCells.filter(c=>c.kind==='solid').length<Math.max(1,Math.round(budget*.07)))return {kind:'solid',rgb:inverted?'0,0,0':'255,255,255',alpha:1,accent:true};
@@ -146,7 +153,7 @@ function drawGrid(now,dt){
   const firstRow=Math.max(0,Math.floor(-rect.top/cell));
   const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
   // Check positions before spawning, including the portrait that would hide accents.
-  const textBounds=protectedText.map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height);
+  const textBounds=protectedText.flatMap(range=>[...range.getClientRects()]).filter(r=>r.width&&r.height);
   const portraitBounds=host.querySelector('.hero-portrait')?.getBoundingClientRect();
   const padding=amp+28*pointerForce+12;
   const overlaps=(x,y,r)=>x+cell+padding>r.left-rect.left&&x-padding<r.right-rect.left&&y+cell+padding>r.top-rect.top&&y-padding<r.bottom-rect.top;
@@ -158,7 +165,7 @@ function drawGrid(now,dt){
     const row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
     const x=col*cell,y=row*cell;
     if(x+cell>gw||y+cell>gh)continue;
-    if(appearance.accent&&blocked(x,y))continue;
+    if(blocked(x,y))continue;
     const center=point(x+cell/2,y+cell/2);
     if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
     if(gridCells.some(c=>c.col===col&&c.row===row))continue;
@@ -185,7 +192,7 @@ function drawGrid(now,dt){
    const proximity=clamp((distance-80)/90);
    c.visibility+=(proximity-c.visibility)*(1-Math.exp(-gridDt/(proximity<c.visibility?70:700)));
    // Include maximum grid distortion and a quiet margin around small text.
-   if(c.accent&&blocked(x,y))continue;
+   if(blocked(x,y))continue;
    ctx.fillStyle=`rgba(${c.rgb},${c.alpha*envelope*c.visibility*(c.accent?1:gridOpacity)})`;
    ctx.beginPath();
    ctx.moveTo(...point(x,y));
@@ -228,8 +235,9 @@ function frame(now){
  const distance=innerWidth*(mobile.matches ? .7 : .3);
  titleA.style.setProperty('--txa',`${(-distance*titleX).toFixed(2)}px`);
  titleB.style.setProperty('--txb',`${(distance*titleX).toFixed(2)}px`);
+ const sceneEase=1-Math.exp(-dt/170);
  if(!mobile.matches){for(const st of states.values()){
-  st.current+= (st.target-st.current)*(reducedMotion.matches?1:ease);
+  st.current+= (st.target-st.current)*(reducedMotion.matches?1:sceneEase);
   st.handoff+=(st.targetHandoff-st.handoff)*ease;
   st.track.style.transform=`translate3d(${st.current.toFixed(2)}px,0,0)`;
   st.wrap.style.transform=`translate3d(0,${st.handoff.toFixed(2)}px,0)`;
