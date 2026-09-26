@@ -97,11 +97,11 @@ let gridCells=[],cellClock=0,nextCell=0,seeded=false,cellStarted=0;
 let gridX=0,gridY=0,pointerX=0,pointerY=0,pointerForce=0,pointerInside=false;
 // These text blocks move with the horizontal tracks and scroll entrances.
 const protectedText=[...host.querySelectorAll('.hero-topline,.hero-copy,.hero-categories,.hero-foot,.hero-role,.scene-chrome,.scene-note,.card-meta,.text-card span,.text-card small,.contact-kicker,.contact > p,.contact-links,footer')];
-function cellAppearance(){
- const choice=Math.random();
- if(choice<.10)return {rgb:'41,151,255',alpha:.65,accent:true};
- if(choice<.17)return {rgb:inverted?'0,0,0':'255,255,255',alpha:1,accent:true};
- return {rgb,alpha:.08+Math.random()*.06,accent:false};
+function cellAppearance(budget){
+ // Maintain the requested share instead of relying on rare random rolls.
+ if(gridCells.filter(c=>c.kind==='solid').length<Math.max(1,Math.round(budget*.07)))return {kind:'solid',rgb:inverted?'0,0,0':'255,255,255',alpha:1,accent:true};
+ if(gridCells.filter(c=>c.kind==='blue').length<Math.max(1,Math.round(budget*.10)))return {kind:'blue',rgb:'41,151,255',alpha:.65,accent:true};
+ return {kind:'quiet',rgb,alpha:.08+Math.random()*.06,accent:false};
 }
 function sizeGrid(){
  if(!ctx)return;
@@ -139,47 +139,53 @@ function drawGrid(now,dt){
  };
  // Fills stay inside the moving cells, underneath the fine grid lines.
  if(!reducedMotion.matches){
-  cellClock+=gridDt*1.625;
+  cellClock+=gridDt*2.1125;
   gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
   const budget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2);
   // Begin each section with staggered cycles, softly revealed on entry.
   const firstRow=Math.max(0,Math.floor(-rect.top/cell));
   const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
-  if(!seeded){
-   seeded=true;cellStarted=cellClock;
-   for(let i=0;i<Math.ceil(budget*.65);i++){
+  // Check positions before spawning, including the portrait that would hide accents.
+  const textBounds=protectedText.map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height);
+  const portraitBounds=host.querySelector('.hero-portrait')?.getBoundingClientRect();
+  const padding=amp+28*pointerForce+12;
+  const overlaps=(x,y,r)=>x+cell+padding>r.left-rect.left&&x-padding<r.right-rect.left&&y+cell+padding>r.top-rect.top&&y-padding<r.bottom-rect.top;
+  const blocked=(x,y)=>textBounds.some(r=>overlaps(x,y,r))||(portraitBounds&&overlaps(x,y,portraitBounds));
+  function spawnCell(staggered=false){
+   const appearance=cellAppearance(budget);
+   for(let attempt=0;attempt<80;attempt++){
     const col=Math.floor(Math.random()*Math.ceil(gw/cell));
     const row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
-    const center=point((col+.5)*cell,(row+.5)*cell);
+    const x=col*cell,y=row*cell;
+    if(x+cell>gw||y+cell>gh)continue;
+    if(appearance.accent&&blocked(x,y))continue;
+    const center=point(x+cell/2,y+cell/2);
     if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
     if(gridCells.some(c=>c.col===col&&c.row===row))continue;
     const life=5500+Math.random()*5500;
-    gridCells.push({col,row,born:cellClock-life*(.12+Math.random()*.6),life,...cellAppearance(),visibility:1});
+    gridCells.push({col,row,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
+    return;
    }
+  }
+  if(!seeded){
+   seeded=true;cellStarted=cellClock;
+   for(let i=0;i<Math.ceil(budget*.65);i++)spawnCell(true);
   }
   if(cellClock>=nextCell&&gridCells.length<budget){
-   const col=Math.floor(Math.random()*Math.ceil(gw/cell));
-   const row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
-   const center=point((col+.5)*cell,(row+.5)*cell);
-   const nearPointer=activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170;
-   if(!nearPointer&&!gridCells.some(c=>c.col===col&&c.row===row)){
-    gridCells.push({col,row,born:cellClock,life:5500+Math.random()*5500,...cellAppearance(),visibility:1});
-   }
+   spawnCell();
    nextCell=cellClock+(110+Math.random()*240)/1.2;
   }
-  // Read current bounds once per frame so moving/revealing captions stay protected.
-  const textBounds=gridCells.some(c=>c.accent)?protectedText.map(el=>el.getBoundingClientRect()).filter(r=>r.width&&r.height):[];
   for(const c of gridCells){
    const age=(cellClock-c.born)/c.life;
    const entrance=clamp((cellClock-cellStarted)/1000);
-   const envelope=Math.pow(Math.sin(Math.PI*age),2)*entrance*entrance*(3-2*entrance);
+   const pulse=c.kind==='solid'?clamp(Math.min(age/.3,(1-age)/.3)):Math.pow(Math.sin(Math.PI*age),2);
+   const envelope=pulse*entrance*entrance*(3-2*entrance);
    const x=c.col*cell,y=c.row*cell,center=point(x+cell/2,y+cell/2);
    const distance=activePointer?Math.hypot(center[0]-pointerX,center[1]-pointerY):Infinity;
    const proximity=clamp((distance-80)/90);
    c.visibility+=(proximity-c.visibility)*(1-Math.exp(-gridDt/(proximity<c.visibility?70:700)));
    // Include maximum grid distortion and a quiet margin around small text.
-   const padding=amp+28+12;
-   if(c.accent&&textBounds.some(r=>x+cell+padding>r.left-rect.left&&x-padding<r.right-rect.left&&y+cell+padding>r.top-rect.top&&y-padding<r.bottom-rect.top))continue;
+   if(c.accent&&blocked(x,y))continue;
    ctx.fillStyle=`rgba(${c.rgb},${c.alpha*envelope*c.visibility*(c.accent?1:gridOpacity)})`;
    ctx.beginPath();
    ctx.moveTo(...point(x,y));
