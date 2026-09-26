@@ -384,3 +384,18 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
   transition-delay:var(--reveal-delay,0ms);
  }
 }
+
+/* Original hand-drawn lettering, aligned to the portrait rather than the viewport. */
+.hero-signature{
+ position:absolute;left:50%;top:70%;width:94%;height:auto;z-index:2;
+ color:#2997ff;overflow:visible;pointer-events:none;
+ transform:translate(-50%,-50%) rotate(-8deg);
+}
+.hero-signature path{stroke-dasharray:1;stroke-dashoffset:1}
+.hero-signature.is-writing path{
+ animation:signature-write var(--write-duration) linear var(--write-delay) forwards;
+}
+@keyframes signature-write{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){
+ .hero-signature path,.hero-signature.is-writing path{animation:none;stroke-dashoffset:0}
+}

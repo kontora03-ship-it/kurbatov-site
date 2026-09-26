@@ -346,3 +346,13 @@ function restorePortfolio(event){
  document.fonts.ready.then(()=>requestAnimationFrame(restore));
 }
 addEventListener('pageshow',restorePortfolio);
+
+ // Write the signature once, after the portrait is available.
+const heroSignature=document.querySelector('.hero-signature');
+const heroPhoto=portrait?.querySelector('img');
+function writeHeroSignature(){heroSignature?.classList.add('is-writing');}
+if(!heroPhoto||heroPhoto.complete)writeHeroSignature();
+else{
+ heroPhoto.addEventListener('load',writeHeroSignature,{once:true});
+ heroPhoto.addEventListener('error',writeHeroSignature,{once:true});
+}
