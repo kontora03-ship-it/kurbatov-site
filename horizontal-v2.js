@@ -150,7 +150,10 @@ function drawGrid(now,dt){
  if(!reducedMotion.matches){
   cellClock+=gridDt*2.1125;
   gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
-  const budget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2*(host===hero?1.25:1));
+  const baseBudget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2*(host===hero?1.25:1));
+  const desktopHero=host===hero&&!mobile.matches;
+  const upperBudget=desktopHero?Math.max(4,Math.round(baseBudget*.35)):0;
+  const budget=baseBudget+upperBudget;
   // Begin each section with staggered cycles, softly revealed on entry.
   const firstRow=Math.max(0,Math.floor(-rect.top/cell));
   const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
@@ -165,7 +168,8 @@ function drawGrid(now,dt){
   function spawnCell(staggered=false){
    const appearance=cellAppearance(budget);
    // Prefer a band around the portrait; retain a uniform fallback for crowded layouts.
-   const nearPortrait=portraitBounds&&Math.random()<.65;
+   const upperBoost=desktopHero&&gridCells.filter(c=>c.upperBoost).length<upperBudget;
+   const nearPortrait=!upperBoost&&portraitBounds&&Math.random()<.65;
    for(let attempt=0;attempt<100;attempt++){
     let col=Math.floor(Math.random()*Math.ceil(gw/cell));
     let row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
@@ -180,6 +184,12 @@ function drawGrid(now,dt){
       row=Math.floor((top+Math.random()*(bottom-top))/cell);
      }
     }
+    if(upperBoost){
+     const upperFirst=Math.max(firstRow,Math.ceil(64/cell));
+     const upperLast=Math.min(lastRow,Math.floor(gh*.38/cell));
+     if(upperLast<=upperFirst)return;
+     row=upperFirst+Math.floor(Math.random()*(upperLast-upperFirst));
+    }
     const x=col*cell,y=row*cell;
     if(x+cell>gw||y+cell>gh)continue;
     if(blocked(x,y))continue;
@@ -187,7 +197,7 @@ function drawGrid(now,dt){
     if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
     if(gridCells.some(c=>c.col===col&&c.row===row))continue;
     const life=5500+Math.random()*5500;
-    gridCells.push({col,row,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
+    gridCells.push({col,row,upperBoost,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
     return;
    }
   }
@@ -197,7 +207,7 @@ function drawGrid(now,dt){
   }
   if(cellClock>=nextCell&&gridCells.length<budget){
    spawnCell();
-   nextCell=cellClock+(110+Math.random()*240)/(host===hero?1.56:1.2);
+   nextCell=cellClock+(110+Math.random()*240)/(desktopHero?2.106:host===hero?1.56:1.2);
   }
   for(const c of gridCells){
    const age=(cellClock-c.born)/c.life;
