@@ -160,18 +160,19 @@ function drawGrid(now,dt){
   const firstRow=Math.max(0,Math.floor(-rect.top/cell));
   const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
   // Check positions before spawning, including the portrait that would hide accents.
-  const textBounds=protectedText.flatMap(range=>[...range.getClientRects()]).filter(r=>r.width&&r.height);
+  const textBounds=protectedText.filter(range=>!desktopHero||!range.startContainer.parentElement?.closest('.hero-title')).flatMap(range=>[...range.getClientRects()]).filter(r=>r.width&&r.height);
   const portraitBounds=host.querySelector('.hero-portrait')?.getBoundingClientRect();
   const padding=amp+28*pointerForce+12;
   const overlaps=(x,y,r)=>x+cell+padding>r.left-rect.left&&x-padding<r.right-rect.left&&y+cell+padding>r.top-rect.top&&y-padding<r.bottom-rect.top;
   // The transparent PNG reveals the grid naturally around the actual silhouette.
   // Only text reserves empty space; the photo has no rectangular exclusion.
   const blocked=(x,y)=>textBounds.some(r=>overlaps(x,y,r));
+  const nameTop=desktopHero?Math.min(titleA.getBoundingClientRect().top,titleB.getBoundingClientRect().top)-rect.top:0;
   const nameBottom=desktopHero?Math.max(titleA.getBoundingClientRect().bottom,titleB.getBoundingClientRect().bottom)-rect.top:0;
   const zones=desktopHero?[
    {name:'ambient',quota:baseBudget,top:0,bottom:gh},
    {name:'upper',quota:upperBudget,top:64,bottom:gh*.38},
-   {name:'names',quota:nameBudget,top:Math.max(64,nameBottom-cell),bottom:Math.min(gh,nameBottom+cell*4)},
+   {name:'names',quota:nameBudget,top:Math.max(64,nameTop),bottom:Math.min(gh,nameBottom+cell)},
    {name:'lower',quota:lowerBudget,top:gh*.70,bottom:gh}
   ]:[{name:'ambient',quota:budget,top:0,bottom:gh}];
   function spawnCell(staggered=false){
