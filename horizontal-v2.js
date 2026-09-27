@@ -132,7 +132,7 @@ function drawGrid(now,dt){
  if(reducedMotion.matches&&!gridDirty)return;
  if(now-lastGrid<33&&!gridDirty)return;
  const gridDt=Math.min(100,now-lastGrid||dt);
- phase+=reducedMotion.matches?0:(now-lastGrid<150?now-lastGrid:dt)*.00018;
+ phase=reducedMotion.matches?0:now*.00018;
  const pointerEase=1-Math.exp(-Math.min(100,now-lastGrid)/180);
  gridX+=(pointerX-gridX)*pointerEase;gridY+=(pointerY-gridY)*pointerEase;
  const activePointer=pointerInside&&!mobile.matches&&finePointer.matches&&!reducedMotion.matches;
@@ -150,15 +150,14 @@ function drawGrid(now,dt){
  if(!reducedMotion.matches){
   cellClock+=gridDt*2.1125;
   gridCells=gridCells.filter(c=>cellClock-c.born<c.life);
-  const baseBudget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2*(host===hero?1.25:1));
   const desktopHero=host===hero&&!mobile.matches;
-  const upperBudget=desktopHero?Math.max(4,Math.round(baseBudget*.35)):0;
-  const nameBudget=desktopHero?Math.max(4,Math.round(baseBudget*.20)):0;
-  const lowerBudget=desktopHero?Math.max(4,Math.round(baseBudget*.25)):0;
-  const budget=baseBudget+upperBudget+nameBudget+lowerBudget;
+  const visibleHeight=Math.min(gh,innerHeight);
+  const baseBudget=Math.round(Math.min(52,Math.max(10,Math.round(gw*visibleHeight/(cell*cell)*.036)))*1.2*(host===hero?1.25:1));
+  const budget=Math.round(baseBudget*(desktopHero?1.8:1));
   // Begin each section with staggered cycles, softly revealed on entry.
   const firstRow=Math.max(0,Math.floor(-rect.top/cell));
   const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
+  gridCells=gridCells.filter(c=>c.row>=firstRow&&c.row<lastRow);
   // Check positions before spawning, including the portrait that would hide accents.
   const textBounds=protectedText.filter(range=>!desktopHero||!range.startContainer.parentElement?.closest('.hero-title')).flatMap(range=>[...range.getClientRects()]).filter(r=>r.width&&r.height);
   const portraitBounds=host.querySelector('.hero-portrait')?.getBoundingClientRect();
@@ -167,46 +166,30 @@ function drawGrid(now,dt){
   // The transparent PNG reveals the grid naturally around the actual silhouette.
   // Only text reserves empty space; the photo has no rectangular exclusion.
   const blocked=(x,y)=>textBounds.some(r=>overlaps(x,y,r));
-  const nameTop=desktopHero?Math.min(titleA.getBoundingClientRect().top,titleB.getBoundingClientRect().top)-rect.top:0;
-  const nameBottom=desktopHero?Math.max(titleA.getBoundingClientRect().bottom,titleB.getBoundingClientRect().bottom)-rect.top:0;
-  const zones=desktopHero?[
-   {name:'ambient',quota:baseBudget,top:0,bottom:gh},
-   {name:'upper',quota:upperBudget,top:64,bottom:gh*.38},
-   {name:'names',quota:nameBudget,top:Math.max(64,nameTop),bottom:Math.min(gh,nameBottom+cell)},
-   {name:'lower',quota:lowerBudget,top:gh*.70,bottom:gh}
-  ]:[{name:'ambient',quota:budget,top:0,bottom:gh}];
+  // Equal screen areas share the animation, without portrait or edge preference.
+  const cols=Math.floor(gw/cell),tileCols=mobile.matches?3:4,tileRows=3;
+  const visibleRows=Math.max(1,lastRow-firstRow);
+  const tileOf=(col,row)=>Math.min(tileRows-1,Math.max(0,Math.floor((row-firstRow)/visibleRows*tileRows)))*tileCols+Math.min(tileCols-1,Math.floor(col/Math.max(1,cols)*tileCols));
   function spawnCell(staggered=false){
    const appearance=cellAppearance(budget);
-   // Balance independent areas. A crowded area cannot stop the others spawning.
-   const ordered=[...zones].sort((a,b)=>
-    gridCells.filter(c=>c.zone===a.name).length/a.quota-
-    gridCells.filter(c=>c.zone===b.name).length/b.quota);
-   for(const zone of ordered){
-    const zoneFirst=Math.max(firstRow,Math.ceil(zone.top/cell));
-    const zoneLast=Math.min(lastRow,Math.floor(zone.bottom/cell));
-    if(zoneLast<=zoneFirst)continue;
-    const nearPortrait=zone.name==='ambient'&&portraitBounds&&Math.random()<.65;
-    for(let attempt=0;attempt<100;attempt++){
-     let col=Math.floor(Math.random()*Math.ceil(gw/cell));
-     let row=zoneFirst+Math.floor(Math.random()*(zoneLast-zoneFirst));
-     if(nearPortrait&&attempt<70){
-      const band=cell*(mobile.matches?3:4);
-      const left=Math.max(0,portraitBounds.left-rect.left-band);
-      const right=Math.min(gw,portraitBounds.right-rect.left+band);
-      const top=Math.max(zoneFirst*cell,portraitBounds.top-rect.top-band);
-      const bottom=Math.min(zoneLast*cell,portraitBounds.bottom-rect.top+band);
-      if(bottom>top&&right>left){
-       col=Math.floor((left+Math.random()*(right-left))/cell);
-       row=Math.floor((top+Math.random()*(bottom-top))/cell);
-      }
-     }
+   const counts=Array(tileCols*tileRows).fill(0);
+   for(const c of gridCells)if(c.row>=firstRow&&c.row<lastRow)counts[tileOf(c.col,c.row)]++;
+   const tiles=counts.map((count,id)=>({id,count,tie:Math.random()})).sort((a,b)=>a.count-b.count||a.tie-b.tie);
+   for(const tile of tiles){
+    const tx=tile.id%tileCols,ty=Math.floor(tile.id/tileCols);
+    const colFrom=Math.ceil(cols*tx/tileCols),colTo=Math.ceil(cols*(tx+1)/tileCols);
+    const rowFrom=firstRow+Math.ceil(visibleRows*ty/tileRows),rowTo=firstRow+Math.ceil(visibleRows*(ty+1)/tileRows);
+    if(colTo<=colFrom||rowTo<=rowFrom)continue;
+    for(let attempt=0;attempt<45;attempt++){
+     const col=colFrom+Math.floor(Math.random()*(colTo-colFrom));
+     const row=rowFrom+Math.floor(Math.random()*(rowTo-rowFrom));
      const x=col*cell,y=row*cell;
      if(x+cell>gw||y+cell>gh||blocked(x,y))continue;
      const center=point(x+cell/2,y+cell/2);
      if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
      if(gridCells.some(c=>c.col===col&&c.row===row))continue;
      const life=5500+Math.random()*5500;
-     gridCells.push({col,row,zone:zone.name,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
+     gridCells.push({col,row,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
      return;
     }
    }

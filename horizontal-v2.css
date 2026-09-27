@@ -408,3 +408,19 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
  .hero-categories a{font-size:14px;line-height:1.45;min-height:44px}
  .hero-categories a span{font-size:11px;margin-right:8px}
 }
+
+/* Shared project grid: consistent heading clearance, image row and captions. */
+@media(min-width:981px){
+ .scene{--work-width:min(40vw,620px,calc((100svh - 420px)*1.6))}
+ .scene .section-heading{top:118px;font-size:clamp(48px,6vw,88px);line-height:.9}
+ .scene .scene-note{top:252px}
+ .scene .track-wrap{top:300px;bottom:34px}
+ .scene .track{align-items:flex-start;padding-inline:var(--pad)}
+ .scene .card-meta{grid-template-rows:minmax(2.7em,auto) auto;min-height:76px}
+}
+.scene .card-media{aspect-ratio:16/10}
+.scene .card-meta{align-content:start}
+#identity .card-media img{object-fit:contain}
+@media(min-width:600px) and (max-width:980px){
+ .scene .card-meta{grid-template-rows:minmax(2.7em,auto) minmax(1.6em,auto)}
+}
