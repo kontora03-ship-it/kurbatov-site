@@ -86,7 +86,7 @@ img{display:block;max-width:100%}
 .card-media{aspect-ratio:16/10;overflow:hidden;background:#ddd;flex:none}
 .dark .card-media{background:#232323}
 .card-media img{width:100%;height:100%;object-fit:contain;object-position:center;transition:transform .65s cubic-bezier(.22,.61,.36,1),filter .4s ease}
-.card:hover .card-media img{transform:scale(1.018)}
+.card:hover .card-media img{transform:none}
 .card-meta{display:grid;grid-template-columns:minmax(0,1fr) auto 24px;gap:10px;align-items:start;padding-top:9px;margin-top:10px;border-top:1px solid currentColor;position:relative;min-height:29px;flex:none}
 .card-meta::before{content:'';position:absolute;left:0;top:-1px;height:1px;width:0;background:var(--accent);transition:width .45s ease}
 .card:hover .card-meta::before{width:100%}
@@ -423,4 +423,12 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
 #identity .card-media img{object-fit:contain}
 @media(min-width:600px) and (max-width:980px){
  .scene .card-meta{grid-template-rows:minmax(2.7em,auto) minmax(1.6em,auto)}
+}
+
+/* V72: cover zoom stays inside its fixed frame. */
+@media(hover:hover) and (pointer:fine){
+ .work-link:hover .card-media img,.work-link:focus-visible .card-media img{transform:scale(1.07)}
+}
+@media(prefers-reduced-motion:reduce){
+ .work-link .card-media img{transition:none;transform:none!important}
 }
