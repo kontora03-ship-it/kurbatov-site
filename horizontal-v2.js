@@ -153,7 +153,9 @@ function drawGrid(now,dt){
   const baseBudget=Math.round(Math.min(52,Math.max(10,Math.round(gw*gh/(cell*cell)*.036)))*1.2*(host===hero?1.25:1));
   const desktopHero=host===hero&&!mobile.matches;
   const upperBudget=desktopHero?Math.max(4,Math.round(baseBudget*.35)):0;
-  const budget=baseBudget+upperBudget;
+  const nameBudget=desktopHero?Math.max(4,Math.round(baseBudget*.20)):0;
+  const lowerBudget=desktopHero?Math.max(4,Math.round(baseBudget*.25)):0;
+  const budget=baseBudget+upperBudget+nameBudget+lowerBudget;
   // Begin each section with staggered cycles, softly revealed on entry.
   const firstRow=Math.max(0,Math.floor(-rect.top/cell));
   const lastRow=Math.min(Math.ceil(gh/cell),Math.ceil((innerHeight-rect.top)/cell));
@@ -165,40 +167,47 @@ function drawGrid(now,dt){
   // The transparent PNG reveals the grid naturally around the actual silhouette.
   // Only text reserves empty space; the photo has no rectangular exclusion.
   const blocked=(x,y)=>textBounds.some(r=>overlaps(x,y,r));
+  const nameBottom=desktopHero?Math.max(titleA.getBoundingClientRect().bottom,titleB.getBoundingClientRect().bottom)-rect.top:0;
+  const zones=desktopHero?[
+   {name:'ambient',quota:baseBudget,top:0,bottom:gh},
+   {name:'upper',quota:upperBudget,top:64,bottom:gh*.38},
+   {name:'names',quota:nameBudget,top:Math.max(64,nameBottom-cell),bottom:Math.min(gh,nameBottom+cell*4)},
+   {name:'lower',quota:lowerBudget,top:gh*.70,bottom:gh}
+  ]:[{name:'ambient',quota:budget,top:0,bottom:gh}];
   function spawnCell(staggered=false){
    const appearance=cellAppearance(budget);
-   // Prefer a band around the portrait; retain a uniform fallback for crowded layouts.
-   const upperBoost=desktopHero&&gridCells.filter(c=>c.upperBoost).length<upperBudget;
-   const nearPortrait=!upperBoost&&portraitBounds&&Math.random()<.65;
-   for(let attempt=0;attempt<100;attempt++){
-    let col=Math.floor(Math.random()*Math.ceil(gw/cell));
-    let row=firstRow+Math.floor(Math.random()*Math.max(1,lastRow-firstRow));
-    if(nearPortrait&&attempt<70){
-     const band=cell*(mobile.matches?3:4);
-     const left=Math.max(0,portraitBounds.left-rect.left-band);
-     const right=Math.min(gw,portraitBounds.right-rect.left+band);
-     const top=Math.max(firstRow*cell,portraitBounds.top-rect.top-band);
-     const bottom=Math.min(lastRow*cell,portraitBounds.bottom-rect.top+band);
-     if(bottom>top&&right>left){
-      col=Math.floor((left+Math.random()*(right-left))/cell);
-      row=Math.floor((top+Math.random()*(bottom-top))/cell);
+   // Balance independent areas. A crowded area cannot stop the others spawning.
+   const ordered=[...zones].sort((a,b)=>
+    gridCells.filter(c=>c.zone===a.name).length/a.quota-
+    gridCells.filter(c=>c.zone===b.name).length/b.quota);
+   for(const zone of ordered){
+    const zoneFirst=Math.max(firstRow,Math.ceil(zone.top/cell));
+    const zoneLast=Math.min(lastRow,Math.floor(zone.bottom/cell));
+    if(zoneLast<=zoneFirst)continue;
+    const nearPortrait=zone.name==='ambient'&&portraitBounds&&Math.random()<.65;
+    for(let attempt=0;attempt<100;attempt++){
+     let col=Math.floor(Math.random()*Math.ceil(gw/cell));
+     let row=zoneFirst+Math.floor(Math.random()*(zoneLast-zoneFirst));
+     if(nearPortrait&&attempt<70){
+      const band=cell*(mobile.matches?3:4);
+      const left=Math.max(0,portraitBounds.left-rect.left-band);
+      const right=Math.min(gw,portraitBounds.right-rect.left+band);
+      const top=Math.max(zoneFirst*cell,portraitBounds.top-rect.top-band);
+      const bottom=Math.min(zoneLast*cell,portraitBounds.bottom-rect.top+band);
+      if(bottom>top&&right>left){
+       col=Math.floor((left+Math.random()*(right-left))/cell);
+       row=Math.floor((top+Math.random()*(bottom-top))/cell);
+      }
      }
+     const x=col*cell,y=row*cell;
+     if(x+cell>gw||y+cell>gh||blocked(x,y))continue;
+     const center=point(x+cell/2,y+cell/2);
+     if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
+     if(gridCells.some(c=>c.col===col&&c.row===row))continue;
+     const life=5500+Math.random()*5500;
+     gridCells.push({col,row,zone:zone.name,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
+     return;
     }
-    if(upperBoost){
-     const upperFirst=Math.max(firstRow,Math.ceil(64/cell));
-     const upperLast=Math.min(lastRow,Math.floor(gh*.38/cell));
-     if(upperLast<=upperFirst)return;
-     row=upperFirst+Math.floor(Math.random()*(upperLast-upperFirst));
-    }
-    const x=col*cell,y=row*cell;
-    if(x+cell>gw||y+cell>gh)continue;
-    if(blocked(x,y))continue;
-    const center=point(x+cell/2,y+cell/2);
-    if(activePointer&&Math.hypot(center[0]-pointerX,center[1]-pointerY)<170)continue;
-    if(gridCells.some(c=>c.col===col&&c.row===row))continue;
-    const life=5500+Math.random()*5500;
-    gridCells.push({col,row,upperBoost,born:cellClock-(staggered?life*(.12+Math.random()*.6):0),life,...appearance,visibility:1});
-    return;
    }
   }
   if(!seeded){
@@ -207,7 +216,7 @@ function drawGrid(now,dt){
   }
   if(cellClock>=nextCell&&gridCells.length<budget){
    spawnCell();
-   nextCell=cellClock+(110+Math.random()*240)/(desktopHero?2.106:host===hero?1.56:1.2);
+   nextCell=cellClock+(110+Math.random()*240)/(desktopHero?2.808:host===hero?1.56:1.2);
   }
   for(const c of gridCells){
    const age=(cellClock-c.born)/c.life;
