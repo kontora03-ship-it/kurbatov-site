@@ -242,7 +242,7 @@ for(const section of document.querySelectorAll('.scene,.contact,.about')){
  const host=section.querySelector('.pin,.about-pin')||section;
  const canvas=document.createElement('canvas');
  canvas.className='section-grid';canvas.setAttribute('aria-hidden','true');host.prepend(canvas);
- ambientGrids.push(createAmbientGrid(host,canvas,section.classList.contains('light')||section.classList.contains('contact')));
+ ambientGrids.push(createAmbientGrid(host,canvas,section.classList.contains('light')));
 }
 function sizeGrid(){for(const grid of ambientGrids)grid.invalidate();}
 function drawGrid(now,dt){for(const grid of ambientGrids)grid.draw(now,dt);}
@@ -362,3 +362,6 @@ else{
  heroPhoto.addEventListener('error',writeHeroSignature,{once:true});
 }
 
+
+// Old merch case links return to the available project list while merch is hidden.
+if(location.hash==='#merch')document.querySelector('#s1')?.scrollIntoView();

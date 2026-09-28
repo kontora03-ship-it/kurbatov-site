@@ -53,3 +53,7 @@
  #about .about-content{will-change:auto}
  #about .about-progress{display:none}
 }
+
+/* V76: light About theme follows the alternating section order. */
+#about.light{background:var(--paper);color:var(--ink);--about-line:rgba(17,17,17,.22);--about-muted:#555}
+#about.light .about-since strong{color:var(--ink)}
