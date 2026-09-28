@@ -9,3 +9,19 @@
 }
 
 #about{font-family:'Inter Tight',Arial,sans-serif;color:var(--ink);scroll-margin-top:76px}#about .heading h2{display:flex;align-items:center;gap:40px;font-size:15px;font-weight:500;margin:0}#about .heading h2 b{font-size:23px;font-weight:800;letter-spacing:-.09em}#about .heading h2 span{color:#f2f1ec;font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase}@media(max-width:680px){#about .heading h2{gap:22px}#about .heading h2 b{font-size:21px}#about .heading h2 span{font-size:10px}}
+
+/* V74: full-width native section, without standalone preview chrome. */
+#about{width:100%;max-width:none;height:min(560px,calc(100svh - 76px));margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:var(--paper);scroll-margin-top:58px}
+#about .heading{padding:24px var(--pad,38px) 18px;background:transparent;color:var(--ink);border:0}
+#about .heading #about-title{margin:0;display:block;font-size:28px;font-weight:600;line-height:1;letter-spacing:-.04em;text-transform:uppercase}
+#about .content{padding-top:22px}
+#about .bottom{height:36px;padding:0 var(--pad,38px);background:transparent;color:var(--muted);border:0}
+#about .track{background:rgba(21,23,25,.15)}
+#about .hint{padding:8px 0}
+@media(max-width:680px){
+ #about{width:100%;height:min(570px,calc(100svh - 76px));margin:0}
+ #about .heading{padding:24px var(--pad,20px) 18px}
+ #about .heading #about-title{font-size:24px}
+ #about .content{padding:20px var(--pad,20px) 32px}
+ #about .bottom{padding-inline:var(--pad,20px)}
+}
