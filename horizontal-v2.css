@@ -432,3 +432,14 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
 @media(prefers-reduced-motion:reduce){
  .work-link .card-media img{transition:none;transform:none!important}
 }
+
+
+/* V75: consistent pointer feedback and contrast on alternating scenes. */
+@media(hover:hover) and (pointer:fine){
+ .nav nav a,.hero-categories a,.contact footer a{transition:color .25s ease}
+ .nav nav a:hover,.hero-categories a:hover,.contact footer a:hover{color:var(--accent)}
+ .work-link:hover .card-meta strong,.work-link:focus-visible .card-meta strong{color:var(--accent)}
+ .card-meta strong{transition:color .25s ease}
+}
+.scene.light .scene-bg{color:var(--ink)}
+.scene.dark .scene-bg{color:var(--light)}

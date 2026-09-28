@@ -238,8 +238,8 @@ addEventListener('pointermove',e=>{
 document.documentElement.addEventListener('pointerleave',()=>{ambientPointer.present=false;});
 addEventListener('blur',()=>{ambientPointer.present=false;});
 const ambientGrids=[createAmbientGrid(hero,document.querySelector('.hero-grid'))];
-for(const section of document.querySelectorAll('.scene,.contact')){
- const host=section.querySelector('.pin')||section;
+for(const section of document.querySelectorAll('.scene,.contact,.about')){
+ const host=section.querySelector('.pin,.about-pin')||section;
  const canvas=document.createElement('canvas');
  canvas.className='section-grid';canvas.setAttribute('aria-hidden','true');host.prepend(canvas);
  ambientGrids.push(createAmbientGrid(host,canvas,section.classList.contains('light')||section.classList.contains('contact')));
@@ -361,3 +361,4 @@ else{
  heroPhoto.addEventListener('load',writeHeroSignature,{once:true});
  heroPhoto.addEventListener('error',writeHeroSignature,{once:true});
 }
+
