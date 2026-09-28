@@ -65,10 +65,29 @@ body{font-family:"Inter Tight",Arial,sans-serif;background:#0b0d0e}
  .bottom{padding-inline:24px;font-size:9px}
  .track{width:70px}
 }
+
+/* Compact viewport with animated internal reading flow. */
+.about{height:min(560px,calc(100svh - 92px));margin:18px auto 28px}
+.scroll{overflow-y:scroll;scroll-behavior:smooth;scrollbar-gutter:stable;scroll-snap-type:y proximity;mask-image:linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 18px),transparent)}
+.content{padding-top:32px;padding-bottom:42px}
+.row{scroll-snap-align:start;scroll-margin-top:24px}
+.motion .reveal{transition:opacity .5s ease,transform .65s cubic-bezier(.2,.7,.2,1);transition-delay:0ms;transform:translateY(16px)}
+.motion .reveal.visible{opacity:1;transform:none}
+@media(max-width:680px){
+ .about{height:min(570px,calc(100svh - 100px));margin:18px auto 28px;width:calc(100% - 24px)}
+ .heading{padding:15px 20px}
+ .content{padding:26px 20px 36px}
+ .bottom{padding-inline:20px}
+ .row{scroll-margin-top:20px}
+}
+@media(prefers-reduced-motion:reduce){
+ .scroll{scroll-behavior:auto;scroll-snap-type:none}
+ .motion .reveal{opacity:1;transform:none;transition:none}
+}
 </style>
 </head>
 <body>
-<div class="preview"><span>ОБО МНЕ / МАКЕТ 06</span><span>Отдельная версия</span></div>
+<div class="preview"><span>ОБО МНЕ / МАКЕТ 07</span><span>Отдельная версия</span></div>
 <section class="about" aria-labelledby="about-title">
 <canvas class="grid" aria-hidden="true"></canvas>
 <header class="heading"><h1 id="about-title"><b>AK</b><span>Обо мне</span></h1><span>GRAPHIC DESIGN / ART DIRECTION</span></header>
@@ -101,7 +120,7 @@ if(!reduced.matches)raf=requestAnimationFrame(frame)}
 function start(){if(!raf)raf=requestAnimationFrame(frame)}
 scroll.addEventListener('scroll',()=>{update();start()},{passive:true});hint.addEventListener('click',()=>{const max=scroll.scrollHeight-scroll.clientHeight;scroll.scrollTo({top:scroll.scrollTop>=max-8?0:Math.min(max,scroll.scrollTop+scroll.clientHeight*.65),behavior:reduced.matches?'instant':'smooth'})});
 box.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'){const r=box.getBoundingClientRect();pointer={x:e.clientX-r.left,y:e.clientY-r.top}}});box.addEventListener('pointerleave',()=>pointer=null);
-if('IntersectionObserver'in window){document.documentElement.classList.add('motion');const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target);dirty=true}}),{root:scroll,threshold:.12});document.querySelectorAll('.reveal').forEach(el=>io.observe(el))}
+if('IntersectionObserver'in window){document.documentElement.classList.add('motion');const io=new IntersectionObserver(entries=>entries.forEach(e=>{e.target.classList.toggle('visible',e.isIntersecting);dirty=true}),{root:scroll,threshold:.04});document.querySelectorAll('.reveal').forEach(el=>io.observe(el))}
 new ResizeObserver(measure).observe(box);reduced.addEventListener('change',()=>{squares=[];dirty=true;start()});document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0}else{dirty=true;start()}});measure();start();
 })();
 </script>
