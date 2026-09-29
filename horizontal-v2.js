@@ -264,7 +264,7 @@ function frame(now){
   st.wrap.style.transform=`translate3d(0,${st.handoff.toFixed(2)}px,0)`;
  }}
  if(crossVisible&&!mobile.matches){cx+=(mx-cx)*ease;cy+=(my-cy)*ease;cross.style.transform=`translate3d(${cx-7}px,${cy-7}px,0)`;}
- drawGrid(now,dt);raf=requestAnimationFrame(frame);
+ drawGrid(now,dt);drawMobileInertia(dt);raf=requestAnimationFrame(frame);
 }
 addEventListener('scroll',update,{passive:true});
 addEventListener('resize',()=>{measure();sizeGrid();},{passive:true});
@@ -393,3 +393,29 @@ if(location.hash==='#merch')document.querySelector('#s1')?.scrollIntoView();
  document.fonts.ready.then(queue);
  queue();
 })();
+
+// V82: small visual lag only; native scrolling remains immediate.
+const mobileMotionItems=[...document.querySelectorAll('main .work-link,#about .about-intro,#about .about-row,.contact > h2,.contact > p')];
+let mobileScrollFollow=scrollY,mobileMotionOffset=0;
+function resetMobileInertia(){
+ mobileScrollFollow=scrollY;mobileMotionOffset=0;
+ for(const item of mobileMotionItems)item.style.removeProperty('--scroll-lag');
+}
+function drawMobileInertia(dt){
+ if(!mobile.matches||reducedMotion.matches){if(mobileMotionOffset)resetMobileInertia();mobileScrollFollow=scrollY;return;}
+ const y=Math.max(0,scrollY);
+ if(Math.abs(y-mobileScrollFollow)>innerHeight*.75)mobileScrollFollow=y;
+ mobileScrollFollow+=(y-mobileScrollFollow)*(1-Math.exp(-dt/120));
+ let offset=clamp((y-mobileScrollFollow)*.14,-10,10);
+ if(Math.abs(offset)<.02)offset=0;
+ if(Math.abs(offset-mobileMotionOffset)<.01)return;
+ mobileMotionOffset=offset;
+ for(const item of mobileMotionItems){
+  const r=item.getBoundingClientRect();
+  item.style.setProperty('--scroll-lag',r.bottom>-60&&r.top<innerHeight+60?offset.toFixed(2)+'px':'0px');
+ }
+}
+addEventListener('resize',resetMobileInertia,{passive:true});
+addEventListener('pageshow',resetMobileInertia);
+mobile.addEventListener('change',resetMobileInertia);
+reducedMotion.addEventListener('change',resetMobileInertia);
