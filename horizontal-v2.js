@@ -256,7 +256,7 @@ function frame(now){
  const distance=innerWidth*(mobile.matches ? .7 : .3);
  titleA.style.setProperty('--txa',`${(-distance*titleX).toFixed(2)}px`);
  titleB.style.setProperty('--txb',`${(distance*titleX).toFixed(2)}px`);
- const sceneEase=1-Math.exp(-dt/170);
+ const sceneEase=1-Math.exp(-dt/220);
  if(!mobile.matches){for(const st of states.values()){
   st.current+= (st.target-st.current)*(reducedMotion.matches?1:sceneEase);
   st.handoff+=(st.targetHandoff-st.handoff)*ease;
@@ -429,7 +429,7 @@ reducedMotion.addEventListener('change',resetMobileInertia);
   if(!enabled()||document.hidden){stop();return;}
   const dt=Math.min(48,previous?now-previous:16.67);previous=now;
   target=clamp(target,0,Math.max(0,document.documentElement.scrollHeight-innerHeight));
-  position+=(target-position)*(1-Math.exp(-dt/145));
+  position+=(target-position)*(1-Math.exp(-dt/240));
   if(Math.abs(target-position)<.4)position=target;
   scrollTo({top:position,behavior:'instant'});written=scrollY;
   if(position===target){animation=0;previous=0;return;}
