@@ -141,6 +141,7 @@ function drawGrid(now,dt){
  ctx.clearRect(0,0,gw,gh);ctx.strokeStyle=`rgba(${rgb},${.21*gridOpacity})`;ctx.lineWidth=.65;
  const cell=(mobile.matches?56:72)*.6,amp=reducedMotion.matches?0:(mobile.matches?9:14);
  const point=(x,y)=>{
+  if(mobile.matches)return [x,y];
   const dx=x-gridX,dy=y-gridY,d=Math.hypot(dx,dy);
   const bend=28*pointerForce*Math.exp(-(d*d)/(190*190));
   return [x+amp*Math.sin(y/190+phase)*Math.cos(x/330-phase*.6)+dx/Math.max(d,1)*bend,
@@ -365,3 +366,30 @@ else{
 
 // Old merch case links return to the available project list while merch is hidden.
 if(location.hash==='#merch')document.querySelector('#s1')?.scrollIntoView();
+
+// Mobile card focus: a single subtle highlight around image and caption.
+(()=>{
+ const cards=[...document.querySelectorAll('main .work-link')];
+ let pending=0,active=null;
+ function draw(){
+  pending=0;
+  const viewport=window.visualViewport;
+  const top=viewport?.offsetTop||0,height=viewport?.height||innerHeight,centre=top+height/2;
+  let next=null,best=Infinity;
+  if(mobile.matches)for(const card of cards){
+   const r=card.getBoundingClientRect();
+   if(r.bottom<=top+60||r.top>=top+height)continue;
+   const distance=Math.abs(r.top+r.height/2-centre);
+   if(distance<best&&distance<height*.42){best=distance;next=card;}
+  }
+  if(next!==active){active?.classList.remove('is-reading');next?.classList.add('is-reading');active=next;}
+ }
+ function queue(){if(!pending)pending=requestAnimationFrame(draw);}
+ addEventListener('scroll',queue,{passive:true});
+ addEventListener('resize',queue,{passive:true});
+ addEventListener('pageshow',queue);
+ mobile.addEventListener('change',queue);
+ window.visualViewport?.addEventListener('resize',queue,{passive:true});
+ document.fonts.ready.then(queue);
+ queue();
+})();
