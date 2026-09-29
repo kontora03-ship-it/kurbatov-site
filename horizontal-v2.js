@@ -419,3 +419,41 @@ addEventListener('resize',resetMobileInertia,{passive:true});
 addEventListener('pageshow',resetMobileInertia);
 mobile.addEventListener('change',resetMobileInertia);
 reducedMotion.addEventListener('change',resetMobileInertia);
+
+// V85: desktop wheel easing; touch, keyboard and nested scrolling remain native.
+(()=>{
+ let target=scrollY,position=scrollY,written=scrollY,animation=0,previous=0;
+ const enabled=()=>!mobile.matches&&!reducedMotion.matches;
+ function stop(){if(animation)cancelAnimationFrame(animation);animation=0;previous=0;target=position=written=scrollY;}
+ function tick(now){
+  if(!enabled()||document.hidden){stop();return;}
+  const dt=Math.min(48,previous?now-previous:16.67);previous=now;
+  target=clamp(target,0,Math.max(0,document.documentElement.scrollHeight-innerHeight));
+  position+=(target-position)*(1-Math.exp(-dt/145));
+  if(Math.abs(target-position)<.4)position=target;
+  scrollTo({top:position,behavior:'instant'});written=scrollY;
+  if(position===target){animation=0;previous=0;return;}
+  animation=requestAnimationFrame(tick);
+ }
+ addEventListener('wheel',e=>{
+  if(!enabled()||e.defaultPrevented||e.ctrlKey||e.metaKey||e.shiftKey||Math.abs(e.deltaX)>Math.abs(e.deltaY)||!e.deltaY)return;
+  let el=e.target instanceof Element?e.target:null;
+  for(;el&&el!==document.body;el=el.parentElement){
+   if(el.matches('input,textarea,select,[contenteditable="true"],[role="dialog"]'))return;
+   const overflow=getComputedStyle(el).overflowY;
+   if(/auto|scroll/.test(overflow)&&el.scrollHeight>el.clientHeight+1&&
+    (e.deltaY<0?el.scrollTop>0:el.scrollTop+el.clientHeight<el.scrollHeight-1))return;
+  }
+  if(!animation)target=position=written=scrollY;
+  const delta=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1);
+  const next=clamp(target+delta,0,Math.max(0,document.documentElement.scrollHeight-innerHeight));
+  if(next===target&&!animation)return;
+  e.preventDefault();target=next;
+  if(!animation)animation=requestAnimationFrame(tick);
+ },{passive:false});
+ addEventListener('scroll',()=>{if(animation&&Math.abs(scrollY-written)>2)stop();},{passive:true});
+ for(const event of ['pointerdown','touchstart','keydown','resize','pageshow','hashchange'])addEventListener(event,stop,{passive:true});
+ document.addEventListener('visibilitychange',stop);
+ mobile.addEventListener('change',stop);
+ reducedMotion.addEventListener('change',stop);
+})();
