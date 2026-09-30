@@ -49,8 +49,8 @@ function measure(){
   const track=scene.querySelector('.track');
   const travel=mobile.matches?0:Math.max(0,track.scrollWidth-innerWidth);
   const distance=travel?Math.max(vh*.5,travel*.92):0;
-  // Keep both endpoints pinned for 600px, including reverse scrolling.
-  const startHold=travel?600:0,endHold=travel?600:0;
+  // Forward end hold; reverse exit is handled by directional wheel input.
+  const startHold=0,endHold=travel?600:0;
   scene.style.height=mobile.matches?'':`${vh+startHold+distance+endHold}px`;
   scene.classList.toggle('is-static',!travel);
   const start=scene.dataset.direction==='reverse'?-travel:0;
@@ -425,8 +425,9 @@ reducedMotion.addEventListener('change',resetMobileInertia);
 // V85: desktop wheel easing; touch, keyboard and nested scrolling remain native.
 (()=>{
  let target=scrollY,position=scrollY,written=scrollY,animation=0,previous=0;
+ const reverseHold=new Map();
  const enabled=()=>!mobile.matches&&!reducedMotion.matches;
- function stop(){if(animation)cancelAnimationFrame(animation);animation=0;previous=0;target=position=written=scrollY;}
+ function stop(){if(animation)cancelAnimationFrame(animation);animation=0;previous=0;target=position=written=scrollY;reverseHold.clear();}
  function tick(now){
   if(!enabled()||document.hidden){stop();return;}
   const dt=Math.min(48,previous?now-previous:16.67);previous=now;
@@ -448,8 +449,17 @@ reducedMotion.addEventListener('change',resetMobileInertia);
   }
   if(!animation)target=position=written=scrollY;
   const delta=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1);
-  const next=clamp(target+delta,0,Math.max(0,document.documentElement.scrollHeight-innerHeight));
-  if(next===target&&!animation)return;
+  let next=clamp(target+delta,0,Math.max(0,document.documentElement.scrollHeight-innerHeight));
+  let held=false;
+  if(delta>0)reverseHold.clear();
+  else for(const scene of [...scenes].reverse()){
+   const st=states.get(scene);
+   if(!st?.travel||target<st.top-.5||next>=st.top)continue;
+   const remaining=reverseHold.has(scene)?reverseHold.get(scene):600;
+   const consumed=Math.min(remaining,st.top-next);
+   if(consumed>0){next+=consumed;held=true;reverseHold.set(scene,remaining-consumed);}
+  }
+  if(next===target&&!animation){if(held)e.preventDefault();return;}
   e.preventDefault();target=next;
   if(!animation)animation=requestAnimationFrame(tick);
  },{passive:false});
