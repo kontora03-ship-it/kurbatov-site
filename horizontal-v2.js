@@ -49,8 +49,8 @@ function measure(){
   const track=scene.querySelector('.track');
   const travel=mobile.matches?0:Math.max(0,track.scrollWidth-innerWidth);
   const distance=travel?Math.max(vh*.5,travel*.92):0;
-  // Keep the last card pinned for another 220px before the next section.
-  const endHold=travel?220:0;
+  // Keep the last card pinned for another 600px before the next section.
+  const endHold=travel?600:0;
   scene.style.height=mobile.matches?'':`${vh+distance+endHold}px`;
   scene.classList.toggle('is-static',!travel);
   const start=scene.dataset.direction==='reverse'?-travel:0;
