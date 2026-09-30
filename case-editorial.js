@@ -15,11 +15,11 @@
  dialog.addEventListener('close',()=>{document.documentElement.style.overflow=previousOverflow;dialog.classList.remove('is-zoomed');opener?.focus({preventScroll:true});});
  for(const img of images){
   const button=document.createElement('button');button.className='case-zoom-trigger';button.type='button';button.setAttribute('aria-label','Увеличить: '+img.alt);
-  img.before(button);button.append(img);
+  const link=img.closest('a');if(link&&link.querySelectorAll('img').length===1){link.replaceWith(button);}else{img.before(button);}button.append(img);
   button.addEventListener('click',()=>{opener=button;full.src=img.currentSrc||img.src;full.alt=img.alt;caption.textContent=img.alt;previousOverflow=document.documentElement.style.overflow;document.documentElement.style.overflow='hidden';zoom.textContent='+';zoom.setAttribute('aria-pressed','false');zoom.setAttribute('aria-label','Увеличить изображение');dialog.showModal();dialog.scrollTop=0;dialog.scrollLeft=0;});
  }
  if('IntersectionObserver' in window&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
   const observer=new IntersectionObserver(entries=>{for(const e of entries)if(e.isIntersecting){e.target.classList.add('is-visible');observer.unobserve(e.target);}},{threshold:.02});
-  document.querySelectorAll('main figure,.case-copy,.case-intro,.next-project').forEach(el=>{el.classList.add('case-enter');observer.observe(el);});
+  document.querySelectorAll('main figure,.case-copy,.case-intro,.art-copy,.case-facts,.next-project').forEach(el=>{el.classList.add('case-enter');observer.observe(el);});
  }
 })();
