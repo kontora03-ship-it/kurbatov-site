@@ -525,3 +525,8 @@ a:focus-visible{outline:2px solid var(--accent);outline-offset:5px}
  .contact.dark .contact-links .contact-button,.contact.dark .contact-button span{transition:none}
  .contact.dark .contact-button:hover span{transform:none}
 }
+
+/* V99: start the second mobile intro line with books. */
+@media(max-width:980px){
+ .hero-copy-mobile-line{display:block}
+}
