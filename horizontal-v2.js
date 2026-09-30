@@ -49,8 +49,8 @@ function measure(){
   const track=scene.querySelector('.track');
   const travel=mobile.matches?0:Math.max(0,track.scrollWidth-innerWidth);
   const distance=travel?Math.max(vh*.5,travel*.92):0;
-  // Forward end hold; reverse exit is handled by directional wheel input.
-  const startHold=0,endHold=travel?600:0;
+  // Exit holds are directional input buffers, never blank entry scroll space.
+  const startHold=0,endHold=0;
   scene.style.height=mobile.matches?'':`${vh+startHold+distance+endHold}px`;
   scene.classList.toggle('is-static',!travel);
   const start=scene.dataset.direction==='reverse'?-travel:0;
@@ -425,9 +425,10 @@ reducedMotion.addEventListener('change',resetMobileInertia);
 // V85: desktop wheel easing; touch, keyboard and nested scrolling remain native.
 (()=>{
  let target=scrollY,position=scrollY,written=scrollY,animation=0,previous=0;
- const reverseHold=new Map();
+ const exitHold=new Map();
+ let holdDirection=0;
  const enabled=()=>!mobile.matches&&!reducedMotion.matches;
- function stop(){if(animation)cancelAnimationFrame(animation);animation=0;previous=0;target=position=written=scrollY;reverseHold.clear();}
+ function stop(){if(animation)cancelAnimationFrame(animation);animation=0;previous=0;target=position=written=scrollY;exitHold.clear();holdDirection=0;}
  function tick(now){
   if(!enabled()||document.hidden){stop();return;}
   const dt=Math.min(48,previous?now-previous:16.67);previous=now;
@@ -451,13 +452,17 @@ reducedMotion.addEventListener('change',resetMobileInertia);
   const delta=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1);
   let next=clamp(target+delta,0,Math.max(0,document.documentElement.scrollHeight-innerHeight));
   let held=false;
-  if(delta>0)reverseHold.clear();
-  else for(const scene of [...scenes].reverse()){
-   const st=states.get(scene);
-   if(!st?.travel||target<st.top-.5||next>=st.top)continue;
-   const remaining=reverseHold.has(scene)?reverseHold.get(scene):600;
-   const consumed=Math.min(remaining,st.top-next);
-   if(consumed>0){next+=consumed;held=true;reverseHold.set(scene,remaining-consumed);}
+  const direction=Math.sign(delta);
+  if(direction!==holdDirection){exitHold.clear();holdDirection=direction;}
+  const ordered=direction>0?scenes:[...scenes].reverse();
+  for(const scene of ordered){
+   const st=states.get(scene);if(!st?.travel)continue;
+   const boundary=direction>0?st.top+st.distance:st.top;
+   const crosses=direction>0?target<=boundary+.5&&next>boundary:target>=boundary-.5&&next<boundary;
+   if(!crosses)continue;
+   const remaining=exitHold.has(scene)?exitHold.get(scene):600;
+   const consumed=Math.min(remaining,Math.abs(next-boundary));
+   if(consumed>0){next-=direction*consumed;held=true;exitHold.set(scene,remaining-consumed);}
   }
   if(next===target&&!animation){if(held)e.preventDefault();return;}
   e.preventDefault();target=next;
