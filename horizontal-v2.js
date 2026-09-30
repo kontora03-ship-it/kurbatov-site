@@ -279,7 +279,7 @@ if('ResizeObserver' in window){
 }
 if('IntersectionObserver' in window){
  const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){entry.target.classList.add('is-visible');observer.unobserve(entry.target);}},{threshold:.04,rootMargin:'0px 0px -8% 0px'});
- document.querySelectorAll('.scene-content,.work-link,.contact > .contact-kicker,.contact > h2,.contact > p,.contact-links,.contact footer').forEach(el=>{
+ document.querySelectorAll('.scene-content,.work-link,.contact > .contact-kicker,.contact > h2,.contact > p,.contact-links .contact-button,.contact footer').forEach(el=>{
   if(el.classList.contains('work-link')){
    el.classList.add('reveal-card');
    el.style.setProperty('--reveal-delay',`${Math.min([...el.parentElement.children].indexOf(el),3)*85}ms`);
