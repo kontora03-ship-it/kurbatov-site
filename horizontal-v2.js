@@ -49,12 +49,12 @@ function measure(){
   const track=scene.querySelector('.track');
   const travel=mobile.matches?0:Math.max(0,track.scrollWidth-innerWidth);
   const distance=travel?Math.max(vh*.5,travel*.92):0;
-  // Keep the last card pinned for another 600px before the next section.
-  const endHold=travel?600:0;
-  scene.style.height=mobile.matches?'':`${vh+distance+endHold}px`;
+  // Keep both endpoints pinned for 600px, including reverse scrolling.
+  const startHold=travel?600:0,endHold=travel?600:0;
+  scene.style.height=mobile.matches?'':`${vh+startHold+distance+endHold}px`;
   scene.classList.toggle('is-static',!travel);
   const start=scene.dataset.direction==='reverse'?-travel:0;
-  states.set(scene,{travel,distance,current:start,target:start,track,wrap:scene.querySelector('.track-wrap'),top:0,handoff:0,targetHandoff:0});
+  states.set(scene,{travel,distance,startHold,current:start,target:start,track,wrap:scene.querySelector('.track-wrap'),top:0,handoff:0,targetHandoff:0});
  }
  for(const scene of scenes)states.get(scene).top=scene.offsetTop;
  update();
@@ -65,7 +65,7 @@ function update(){
  titleTarget=reducedMotion.matches?0:clamp(scrollY/range);
  for(const scene of scenes){
   const st=states.get(scene);if(!st||mobile.matches)continue;
-  const p=clamp((scrollY-st.top)/Math.max(1,st.distance));
+  const p=clamp((scrollY-st.top-st.startHold)/Math.max(1,st.distance));
   st.target=-st.travel*(scene.dataset.direction==='reverse'?1-p:p);
   st.targetHandoff=0;
   scene.querySelector('.progress span')?.style.setProperty('--p',String(p));
@@ -79,7 +79,7 @@ document.addEventListener('focusin',e=>{
  if(rect.left>=0&&rect.right<=innerWidth)return;
  const x=clamp(card.offsetLeft-innerWidth*.07,0,st.travel);
  const p=scene.dataset.direction==='reverse'?1-x/st.travel:x/st.travel;
- scrollTo({top:st.top+p*st.distance,behavior:reducedMotion.matches?'instant':'smooth'});
+ scrollTo({top:st.top+st.startHold+p*st.distance,behavior:reducedMotion.matches?'instant':'smooth'});
 });
 const cross=document.createElement('div');cross.className='cursor-cross';cross.setAttribute('aria-hidden','true');document.body.append(cross);
 let mx=0,my=0,cx=0,cy=0,crossVisible=false;
@@ -340,7 +340,7 @@ function restorePortfolio(event){
    else if(st?.travel){
     const x=clamp(card.offsetLeft-innerWidth*.07,0,st.travel);
     const p=scene.dataset.direction==='reverse'?1-x/st.travel:x/st.travel;
-    y=st.top+p*st.distance;
+    y=st.top+st.startHold+p*st.distance;
    }else if(scene)y=scene.offsetTop;
   }
   if(card){
