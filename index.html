@@ -12,6 +12,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="horizontal-v2.css?v=86">
   <link rel="stylesheet" href="about.css?v=81">
+<script>
+(()=>{try{
+ const returning=new URLSearchParams(location.search).has('portfolio-return')||performance.getEntriesByType('navigation')[0]?.type==='back_forward'||history.state?.portfolioReturn;
+ if(!returning&&!location.hash&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&!sessionStorage.getItem('kurbatov-intro-v92')){
+  document.documentElement.classList.add('home-intro-pending');
+  window.homeIntroPending=true;
+  setTimeout(()=>document.documentElement.classList.remove('home-intro-pending'),4500);
+ }
+}catch{}})();
+</script>
+<style>.home-intro-pending .hero>*,.home-intro-pending .nav{visibility:hidden}</style>
 </head>
 <body>
   <a class="skip-link" href="#s1">Перейти к&nbsp;работам</a>
@@ -174,8 +185,9 @@
     </section>
 </template>
 
-  <script src="horizontal-v2.js?v=86"></script>
+  <script src="horizontal-v2.js?v=92"></script>
   <script src="about.js?v=76"></script>
+<script src="home-intro.js?v=92"></script>
 </body>
 </html>
 
