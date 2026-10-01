@@ -8,9 +8,9 @@
 #about .about-heading>span{font-size:10px;color:var(--about-muted);letter-spacing:.1em}
 #about .about-content{max-width:1120px;margin:0 auto;padding:8px 0 20px;will-change:transform}
 #about .about-intro{display:grid;grid-template-columns:220px minmax(0,1fr);gap:clamp(36px,5vw,76px);align-items:start;padding-bottom:36px}
-#about .about-since{padding:24px 0;border-top:3px solid var(--accent);font-size:18px;font-weight:600;color:var(--about-muted)}
-#about .about-since strong{display:block;font-size:76px;line-height:1;font-weight:700;letter-spacing:-.075em;color:var(--light);margin:8px 0 25px}
-#about .about-since span{display:block;padding-top:16px;border-top:1px solid var(--about-line);font-size:11px;font-weight:400}
+#about .about-since{padding:24px 0;border-top:3px solid var(--accent);font-size:18px;font-weight:600;color:var(--accent)}
+#about .about-since strong{display:block;font-size:76px;line-height:1;font-weight:700;letter-spacing:-.075em;color:var(--accent);margin:8px 0 25px}
+#about .about-since span{display:block;padding-top:16px;border-top:1px solid var(--about-line);font-size:11px;font-weight:400;color:var(--about-muted)}
 #about .about-name{font-size:clamp(26px,2.6vw,38px);font-weight:600;letter-spacing:-.04em;margin:0 0 9px;line-height:1.15}
 #about .about-role{color:var(--accent);font-size:11px;letter-spacing:.05em;text-transform:uppercase;margin:0 0 25px}
 #about .about-lead{font-size:clamp(22px,2.2vw,30px);font-weight:500;letter-spacing:-.025em;line-height:1.35;margin:0}
@@ -56,7 +56,7 @@
 
 /* V76: light About theme follows the alternating section order. */
 #about.light{background:var(--paper);color:var(--ink);--about-line:rgba(17,17,17,.22);--about-muted:#555}
-#about.light .about-since strong{color:var(--ink)}
+#about.light .about-since strong{color:var(--accent)}
 
 @media(max-width:980px){
  #about .about-heading,#about .about-since,#about .about-since span,#about .about-row{border:0}
