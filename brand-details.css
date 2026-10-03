@@ -1,0 +1,6 @@
+/* One brand blue and consistent punctuation across light and dark pages. */
+:root{--brand-blue:#2997ff}
+.nav .brand{display:inline-flex;align-items:baseline;white-space:nowrap}
+.nav .brand::after{content:"";width:.3em;height:.3em;border-radius:50%;background:var(--brand-blue);margin-left:.2em;flex:none;align-self:baseline}
+body .brand-dot-word{color:inherit;white-space:nowrap}
+body .brand-dot{display:inline-block;width:.14em;height:.14em;margin-left:.055em;border-radius:50%;background:#2997ff;color:#2997ff;vertical-align:.04em;line-height:0;letter-spacing:0}
