@@ -1,0 +1,14 @@
+.rock-carousel{max-width:1000px;margin:64px auto 80px;min-width:0}
+.rock-carousel-heading{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:24px}
+.rock-carousel-heading h2{font-size:clamp(24px,3vw,36px);font-weight:500;margin:12px 0}
+.rock-carousel-heading p:not(.kicker){color:var(--muted);font-size:14px;line-height:1.6;max-width:48ch}
+.rock-carousel-controls{display:flex;gap:8px;flex:none}
+.rock-carousel-controls button{width:42px;height:42px;border:1px solid var(--line);border-radius:50%;color:#2997ff;background:transparent;font:22px Arial;cursor:pointer}
+.rock-carousel-controls button:hover{background:#2997ff;color:#fff}
+.rock-carousel-controls button:disabled{opacity:.25;cursor:default;background:transparent;color:#2997ff}
+.rock-carousel :focus-visible{outline:2px solid #2997ff;outline-offset:3px}
+.rock-carousel-track{display:flex;gap:18px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:#2997ff #252a2e;padding:6px 3px 18px}
+.rock-carousel-track figure{flex:0 0 176px;width:176px;margin:0;scroll-snap-align:start}
+.rock-carousel-track img{width:100%;height:auto;display:block}
+.rock-carousel-track figcaption{padding-top:12px;font-size:10px;line-height:1.5;letter-spacing:.03em}
+@media(max-width:700px){.rock-carousel{margin:44px auto 56px}.rock-carousel-heading{gap:12px;align-items:center}.rock-carousel-track figure{flex-basis:142px;width:142px}.rock-carousel-track{gap:12px}.rock-carousel-controls button{width:36px;height:36px}}
