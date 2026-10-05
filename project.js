@@ -47,3 +47,38 @@ ym(113393586,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',
  back.addEventListener('click',goBack);
  button.addEventListener('click',goBack);
 })();
+
+/* Match the home page's trailing blue cross on mouse-driven desktops. */
+(() => {
+ const enabled=matchMedia('(min-width:981px) and (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference)');
+ const cross=document.createElement('div');
+ cross.className='cursor-cross';cross.setAttribute('aria-hidden','true');
+ document.body.append(cross);
+ let mx=0,my=0,cx=0,cy=0,visible=false,frame=0,last=0;
+ function hide(){
+  visible=false;cross.classList.remove('is-visible');
+  cancelAnimationFrame(frame);frame=0;last=0;
+ }
+ function draw(time){
+  const dt=last?Math.min(time-last,64):16.67;last=time;
+  const ease=1-Math.exp(-dt/95);
+  cx+=(mx-cx)*ease;cy+=(my-cy)*ease;
+  cross.style.transform='translate3d('+(cx-7)+'px,'+(cy-7)+'px,0)';
+  if(visible&&(Math.abs(mx-cx)>.05||Math.abs(my-cy)>.05))frame=requestAnimationFrame(draw);
+  else {frame=0;last=0;}
+ }
+ addEventListener('pointermove',e=>{
+  if(e.pointerType!=='mouse'||!enabled.matches){hide();return;}
+  mx=e.clientX+18;my=e.clientY+18;
+  if(!visible){
+   cx=mx;cy=my;visible=true;
+   cross.style.transform='translate3d('+(cx-7)+'px,'+(cy-7)+'px,0)';
+   cross.classList.add('is-visible');
+  }
+  if(!frame)frame=requestAnimationFrame(draw);
+ },{passive:true});
+ document.documentElement.addEventListener('pointerleave',hide);
+ addEventListener('blur',hide);
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)hide();});
+ enabled.addEventListener('change',hide);
+})();
