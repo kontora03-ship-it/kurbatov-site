@@ -24,13 +24,13 @@ header{position:absolute;top:32px;left:40px;right:40px;z-index:4;display:flex;ju
 @media(prefers-reduced-motion:reduce){.logo-layer{transition:none}}
 
 /* 03 — Color. The original vector paths stay unchanged. */
-.color-band{--band-bg:#e52328;--band-ink:#fff;--band-symbol:#fff;position:relative;isolation:isolate;height:clamp(245px,27vw,340px);display:grid;place-items:center;background:var(--band-bg);color:var(--band-ink);transition:background-color .4s ease,color .4s ease;overflow:hidden}
+.color-band{--band-bg:#e52328;--band-ink:#fff;--band-symbol:#fff;position:relative;isolation:isolate;height:clamp(245px,27vw,340px);display:grid;place-items:center;background:var(--band-bg);color:var(--band-ink);transition:background-color .25s ease,color .25s ease;overflow:hidden}
 .color-band[data-color="black"]{--band-bg:#1f1f1f;--band-ink:#fff;--band-symbol:#e52328}
 .color-band[data-color="white"]{--band-bg:#fff;--band-ink:#1f1f1f;--band-symbol:#e52328}
 .color-band .band-logo{display:block;width:clamp(230px,30vw,390px);height:auto;overflow:visible}
-.color-band .band-logo [fill="#e52328"]{fill:var(--band-symbol);transition:fill .4s ease}
-.color-band .band-logo [fill="#1f1f1f"],.color-band .band-logo [fill="#1d1d1b"]{fill:var(--band-ink);transition:fill .4s ease}
-.color-band .band-logo [stroke="#1d1d1b"]{stroke:var(--band-ink);transition:stroke .4s ease}
+.color-band .band-logo [fill="#e52328"]{fill:var(--band-symbol);transition:fill .25s ease}
+.color-band .band-logo [fill="#1f1f1f"],.color-band .band-logo [fill="#1d1d1b"]{fill:var(--band-ink);transition:fill .25s ease}
+.color-band .band-logo [stroke="#1d1d1b"]{stroke:var(--band-ink);transition:stroke .25s ease}
 .band-index{position:absolute;top:25px;left:clamp(24px,5vw,80px);font:10px/1.4 Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;opacity:.7}
 .band-controls{position:absolute;bottom:22px;right:clamp(24px,5vw,80px);display:flex;gap:5px;align-items:center}
 .band-swatch{position:relative;width:36px;height:36px;border:1px solid transparent;border-radius:50%;padding:8px;background:none;color:inherit;cursor:pointer;transition:border-color .2s ease}
@@ -318,7 +318,7 @@ if(matchMedia('(prefers-reduced-motion: reduce)').matches)window.incityAnimation
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  let index=0,timer=null,visible=false,holdUntil=0;
  function show(i){index=i;band.dataset.color=colors[i];swatches.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.bandColor===colors[i])))}
- function schedule(){clearTimeout(timer);if(!visible||document.hidden||reduced.matches)return;timer=setTimeout(()=>{show((index+1)%colors.length);holdUntil=0;schedule()},Math.max(holdUntil-Date.now(),1700))}
+ function schedule(){clearTimeout(timer);if(!visible||document.hidden||reduced.matches)return;timer=setTimeout(()=>{show((index+1)%colors.length);holdUntil=0;schedule()},Math.max(holdUntil-Date.now(),500))}
  swatches.forEach((button,i)=>button.addEventListener('click',()=>{show(i);holdUntil=Date.now()+5000;schedule()}));
  new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;schedule()},{threshold:.15}).observe(band);
  document.addEventListener('visibilitychange',schedule);
