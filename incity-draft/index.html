@@ -316,7 +316,7 @@ header,.eyebrow,.version-caption,.band-index{font-weight:400}
  </dl>
  <p class="band-print-note">CMYK — расчётный · Pantone — ориентир, уточняется по вееру</p>
 
- <div class="band-controls" role="group" aria-label="Выбрать фон. После выбора цвет сохраняется пять секунд.">
+ <div class="band-controls" role="group" aria-label="Выбрать фон и остановить автоматическую смену цветов.">
   <button class="band-swatch" type="button" data-band-color="red" style="--swatch:#e52328" aria-label="Красный фон" aria-pressed="true"></button>
   <button class="band-swatch" type="button" data-band-color="black" style="--swatch:#1f1f1f" aria-label="Чёрный фон" aria-pressed="false"></button>
   <button class="band-swatch" type="button" data-band-color="white" style="--swatch:#fff" aria-label="Белый фон" aria-pressed="false"></button>
@@ -417,21 +417,21 @@ if(matchMedia('(prefers-reduced-motion: reduce)').matches)window.incityAnimation
  const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){if(!reduced&&!manual)play();observer.disconnect()}},{threshold:.3});observer.observe(compare);
 })();
 
-// Quick loop; each manual selection holds for a full five seconds.
+// One-second loop; a manual color selection pauses it until page reload.
 (()=>{
  const band=document.querySelector('#color-band');
  const swatches=[...band.querySelectorAll('[data-band-color]')];
  const colors=['red','black','white'];
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
- let index=0,timer=null,visible=false,holdUntil=0;
+ let index=0,timer=null,visible=false,manualSelection=false;
  const codes=[
  {rgb:'229 / 35 / 40',cmyk:'0 / 85 / 83 / 10',hex:'#E52328',pantone:'1795 C'},
  {rgb:'31 / 31 / 31',cmyk:'0 / 0 / 0 / 88',hex:'#1F1F1F',pantone:''},
  {rgb:'255 / 255 / 255',cmyk:'0 / 0 / 0 / 0',hex:'#FFFFFF',pantone:'Белая бумага'}
  ];
  function show(i){index=i;band.dataset.color=colors[i];swatches.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.bandColor===colors[i])));for(const key of ['rgb','cmyk','hex','pantone'])band.querySelector('#band-'+key).textContent=codes[i][key];band.querySelector('#band-cmyk-item').hidden=i===2;band.querySelector('#band-spot-item').hidden=i===1;band.querySelector('#band-spot-label').textContent=i===2?'Материал':'Pantone ≈';band.querySelector('.band-print-note').textContent=i===0?'CMYK — расчётный · Pantone — ориентир, уточняется по вееру':i===1?'CMYK — расчётный, уточняется под условия печати':'Белый цвет бумаги / без нанесения краски'}
- function schedule(){clearTimeout(timer);if(!visible||document.hidden||reduced.matches)return;timer=setTimeout(()=>{show((index+1)%colors.length);holdUntil=0;schedule()},Math.max(holdUntil-Date.now(),1000))}
- swatches.forEach((button,i)=>button.addEventListener('click',()=>{show(i);holdUntil=Date.now()+5000;schedule()}));
+ function schedule(){clearTimeout(timer);if(manualSelection||!visible||document.hidden||reduced.matches)return;timer=setTimeout(()=>{show((index+1)%colors.length);schedule()},1000)}
+ swatches.forEach((button,i)=>button.addEventListener('click',()=>{manualSelection=true;show(i);schedule()}));
  new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;schedule()},{threshold:.15}).observe(band);
  document.addEventListener('visibilitychange',schedule);
  reduced.addEventListener('change',schedule);
