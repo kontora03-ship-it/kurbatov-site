@@ -95,6 +95,13 @@ header,.eyebrow,.version-caption,.band-index{font-weight:400}
 .band-print-note{position:absolute;bottom:25px;left:clamp(24px,5vw,80px);font-size:9px;line-height:1.5;opacity:.6;max-width:65%;margin:0}
 @media(max-width:600px){.color-band{height:380px}.color-band .band-logo{transform:translateY(-53px)}.band-specs{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px 24px;bottom:72px}.band-specs dt{font-size:8px;margin-bottom:5px}.band-specs dd{font-size:12px}.band-print-note{bottom:22px;font-size:8px;max-width:58%}}
 
+
+/* Three selected brand weights; all live specimens stay in sync. */
+.type-weights{grid-template-columns:repeat(3,1fr)}
+.type-specimen,.type-alphabet,.type-digits{font-weight:var(--sample-weight,400);transition:font-weight .45s ease}
+.type-readout>span{min-width:105px;text-align:right}
+#type-glyph-weight{display:inline-block;color:#1f1f1f;letter-spacing:.04em}
+@media(prefers-reduced-motion:reduce){.type-specimen,.type-alphabet,.type-digits{transition:none}}
 </style></head><body><section class="hero" id="logo"><header><span>ИНСИТИ / Фирменный стиль</span><span>01 — Логотип</span></header><main aria-label="Анимация фирменного знака ИНСИТИ"><div class="stage"><div class="construction" aria-hidden="true"><svg viewBox="0 0 620 330"><path d="M22 85H598M22 142H598M22 197H598M22 245H598M91 25V305M222 25V305M551 25V305"/><path class="red" d="M35 155L117 101L200 155M35 232Q117 220 200 232"/><circle cx="117" cy="170" r="105"/><path d="M22 25h12m-6-6v12M586 25h12m-6-6v12M22 305h12m-6-6v12M586 305h12m-6-6v12"/></svg></div><svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" version="1.1" viewBox="35 15 486 158" overflow="hidden" class="logo" role="img" aria-label="ИНСИТИ — агентство недвижимости">
 <defs>
 <clipPath id="clip_1">
@@ -323,23 +330,20 @@ header,.eyebrow,.version-caption,.band-index{font-weight:400}
    <p class="type-summary">Прямой характер, открытые формы и ясный ритм. Одна гарнитура — от спокойного текста до выразительного заголовка</p>
   </div>
   <div class="type-lab">
-   <div class="type-lab-head"><span class="type-small">Один шрифт<br>Разный голос</span><div class="type-readout"><span id="type-value">400</span><button class="type-play" id="type-play" type="button" aria-pressed="true">Пауза</button></div></div>
+   <div class="type-lab-head"><span class="type-small">Один шрифт<br>Разный голос</span><div class="type-readout"><span id="type-value">Regular / 400</span><button class="type-play" id="type-play" type="button" aria-pressed="true">Пауза</button></div></div>
    <div class="type-specimen" id="type-specimen" aria-label="Образец шрифта">Пространство</div>
    <label class="type-small" for="type-input">Попробуйте свой текст</label>
    <input class="type-input" id="type-input" type="text" maxlength="24" value="Пространство" spellcheck="false" aria-label="Текст образца шрифта">
-   <input class="type-range" id="type-range" type="range" min="400" max="900" value="400" step="1" aria-label="Насыщенность шрифта">
-   <div class="type-range-labels"><span>400</span><span>900</span></div>
+   <input class="type-range" id="type-range" type="range" min="0" max="2" value="0" step="1" aria-label="Начертание: Regular, SemiBold или Bold" aria-valuetext="Regular 400">
+   <div class="type-range-labels"><span>Regular / 400</span><span>SemiBold / 600</span><span>Bold / 700</span></div>
   </div>
   <div class="type-weights" role="group" aria-label="Начертания Golos Text">
    <button type="button" class="type-weight" data-weight="400" style="--weight:400" aria-pressed="true"><b>Аа</b><span>Regular / 400</span></button>
-<button type="button" class="type-weight" data-weight="500" style="--weight:500" aria-pressed="false"><b>Аа</b><span>Medium / 500</span></button>
 <button type="button" class="type-weight" data-weight="600" style="--weight:600" aria-pressed="false"><b>Аа</b><span>SemiBold / 600</span></button>
 <button type="button" class="type-weight" data-weight="700" style="--weight:700" aria-pressed="false"><b>Аа</b><span>Bold / 700</span></button>
-<button type="button" class="type-weight" data-weight="800" style="--weight:800" aria-pressed="false"><b>Аа</b><span>ExtraBold / 800</span></button>
-<button type="button" class="type-weight" data-weight="900" style="--weight:900" aria-pressed="false"><b>Аа</b><span>Black / 900</span></button>
-  </div>
+</div>
   <div class="type-details">
-   <div class="type-glyphs"><div class="type-small">Формы / знаки / ритм</div>
+   <div class="type-glyphs"><div class="type-small">Формы / знаки / ритм <span id="type-glyph-weight">— Regular / 400</span></div>
     <p class="type-alphabet">Аа Бб Вв Гг Дд Ее Ёё Жж Зз<br>Ии Йй Кк Лл Мм Нн Оо Пп<br>Рр Сс Тт Уу Фф Хх Цц Чч<br>Шш Щщ Ъъ Ыы Ьь Ээ Юю Яя</p>
     <div class="type-digits">0123456789<br>₽ % &amp; @ № +</div>
     <p class="type-note">В заголовках — Bold 700, в подзаголовках — SemiBold 600, в основном тексте — Regular 400. Небольшие подписи набраны с разрядкой</p>
@@ -433,26 +437,25 @@ if(matchMedia('(prefers-reduced-motion: reduce)').matches)window.incityAnimation
  reduced.addEventListener('change',schedule);
 })();
 
-/* The variable font is embedded in this page, including Cyrillic. */
+/* Three brand weights, synchronized across word, alphabet, digits and symbols. */
 (()=>{
- const section=document.querySelector('#typography'),specimen=document.querySelector('#type-specimen'),slider=document.querySelector('#type-range'),readout=document.querySelector('#type-value'),play=document.querySelector('#type-play'),input=document.querySelector('#type-input'),weights=[...section.querySelectorAll('[data-weight]')];
+ const section=document.querySelector('#typography'),specimen=document.querySelector('#type-specimen'),slider=document.querySelector('#type-range'),readout=document.querySelector('#type-value'),glyphLabel=document.querySelector('#type-glyph-weight'),play=document.querySelector('#type-play'),input=document.querySelector('#type-input'),buttons=[...section.querySelectorAll('[data-weight]')];
+ const variants=[{weight:400,name:'Regular'},{weight:600,name:'SemiBold'},{weight:700,name:'Bold'}];
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
- let playing=!reduced.matches,visible=false,raf=0,start=null,current=400;
- function setWeight(v){current=Math.round(v);specimen.style.fontWeight=current;slider.value=current;readout.textContent=current;weights.forEach(b=>b.setAttribute('aria-pressed',String(Math.abs(+b.dataset.weight-current)<35)))}
+ let playing=!reduced.matches,visible=false,timer=null,index=0;
+ function show(i){index=i;const v=variants[i];section.style.setProperty('--sample-weight',v.weight);slider.value=i;slider.setAttribute('aria-valuetext',v.name+' '+v.weight);readout.textContent=v.name+' / '+v.weight;glyphLabel.textContent='— '+v.name+' / '+v.weight;buttons.forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.weight===v.weight)))}
  function fit(){const n=specimen.textContent.length;specimen.style.fontSize=n>13?'clamp(22px,'+(7.7*13/n).toFixed(2)+'vw,'+(116*13/n).toFixed(1)+'px)':''}
  function renderButton(){play.textContent=playing?'Пауза':'Анимация';play.setAttribute('aria-pressed',String(playing))}
- function stop(){cancelAnimationFrame(raf);raf=0;start=null}
- function frame(t){if(!playing||!visible||document.hidden){stop();return}if(start===null)start=t;const phase=(t-start)/6400;setWeight(650-250*Math.cos(phase*Math.PI*2));raf=requestAnimationFrame(frame)}
- function run(){stop();if(playing&&visible&&!document.hidden)raf=requestAnimationFrame(frame)}
- function manual(v){playing=false;stop();setWeight(v);renderButton()}
+ function stop(){clearTimeout(timer);timer=null}
+ function run(){stop();if(playing&&visible&&!document.hidden)timer=setTimeout(()=>{show((index+1)%variants.length);run()},2200)}
+ function manual(i){playing=false;stop();show(i);renderButton()}
  slider.addEventListener('input',()=>manual(+slider.value));
- weights.forEach(b=>b.addEventListener('click',()=>manual(+b.dataset.weight)));
+ buttons.forEach(b=>b.addEventListener('click',()=>manual(variants.findIndex(v=>v.weight===+b.dataset.weight))));
  play.addEventListener('click',()=>{playing=!playing;renderButton();run()});
  input.addEventListener('input',()=>{specimen.textContent=input.value||'Пространство';fit()});
  new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;run()},{threshold:.08}).observe(section);
  document.addEventListener('visibilitychange',run);
- reduced.addEventListener('change',()=>{if(reduced.matches){playing=false;stop();setWeight(400);renderButton()}});
- setWeight(400);renderButton();
+ reduced.addEventListener('change',()=>{if(reduced.matches){playing=false;stop();show(0);renderButton()}});
+ show(0);renderButton();
 })();
-
 </script></body></html>
