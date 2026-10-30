@@ -458,4 +458,37 @@ if(matchMedia('(prefers-reduced-motion: reduce)').matches)window.incityAnimation
  reduced.addEventListener('change',()=>{if(reduced.matches){playing=false;stop();show(0);renderButton()}});
  show(0);renderButton();
 })();
+
+/* Russian typography: keep prepositions and short function words with the next word.
+   Runs on current and newly added editorial copy; excludes logos and interactive specimens. */
+(()=>{
+ const selector='p,h1,h2,h3,h4,h5,h6,li,blockquote,figcaption,.type-small,.eyebrow';
+ const excluded='svg,script,style,code,pre,textarea,input,[contenteditable],.type-specimen,.type-alphabet,.type-digits';
+ const shortWords=/(?<![\p{L}\p{N}_])(?:а|и|в|во|не|ни|к|ко|о|об|обо|по|с|со|у|на|за|из|изо|от|ото|до|для|без|безо|над|надо|под|подо|при|про|перед|передо|через|между)[ \t]+(?=[\p{L}\p{N}«„“"(])/giu;
+ function protect(text){return text.replace(shortWords,word=>word.replace(/[ \t]+$/,'\u00a0'))}
+ function fixElement(el){
+  if(el.closest(excluded))return;
+  const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+  let node;while((node=walker.nextNode())){
+   if(node.parentElement.closest(excluded))continue;
+   const next=protect(node.data);if(next!==node.data)node.data=next;
+  }
+ }
+ function fix(root){
+  if(root.nodeType!==1)return;
+  if(root.matches(selector))fixElement(root);
+  root.querySelectorAll(selector).forEach(fixElement);
+ }
+ fix(document.body);
+ new MutationObserver(records=>{
+  const targets=new Set();
+  records.forEach(record=>{
+   if(record.type==='characterData'){const el=record.target.parentElement?.closest(selector);if(el)targets.add(el)}
+   else {record.addedNodes.forEach(node=>{if(node.nodeType===1)fix(node);else if(node.nodeType===3){const el=node.parentElement?.closest(selector);if(el)targets.add(el)}})}
+  });
+  targets.forEach(fixElement);
+ }).observe(document.body,{childList:true,subtree:true,characterData:true});
+ window.incityTypography={protect,refresh:()=>fix(document.body)};
+})();
+
 </script></body></html>
