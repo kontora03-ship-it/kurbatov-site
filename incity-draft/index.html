@@ -519,7 +519,7 @@ button,a,input{touch-action:manipulation}
 
 
 <section class="pattern-section" id="pattern" aria-labelledby="pattern-title">
- <div class="pattern-intro"><div><p class="pattern-kicker">05 / Фирменный паттерн</p><h2 id="pattern-title">Архитектура<br><span>фирменного стиля</span></h2></div><p class="pattern-description">Городской ритм складывается из фасадов, крыш, вертикалей и&nbsp;плавных линий. Их&nbsp;повторение создаёт непрерывную архитектурную композицию — образ города, который растёт и&nbsp;развивается. Цветной, светлый, тёмный и&nbsp;контурный варианты сохраняют общий рисунок и&nbsp;задают разное настроение</p></div>
+ <div class="pattern-intro"><div><p class="pattern-kicker">05 / Фирменный паттерн</p><h2 id="pattern-title"><span class="title-mask-window"><span class="title-mask-line">Архитектура</span></span><span class="title-mask-window"><span class="title-mask-line">фирменного стиля</span></span></h2></div><p class="pattern-description">Городской ритм складывается из фасадов, крыш, вертикалей и&nbsp;плавных линий. Их&nbsp;повторение создаёт непрерывную архитектурную композицию — образ города, который растёт и&nbsp;развивается. Цветной, светлый, тёмный и&nbsp;контурный варианты сохраняют общий рисунок и&nbsp;задают разное настроение</p></div>
  <div class="pattern-arrival-track"><p class="pattern-arrival-hint">Четыре исполнения / единый рисунок</p><div class="pattern-loop" aria-label="Цветной, светлый, тёмный и контурный варианты паттерна"><div class="pattern-arrival-row"><div class="pattern-arrival-window"><svg xmlns="http://www.w3.org/2000/svg" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" class="pattern-build-art pattern-arrival" data-build-variant="color" viewBox="388.6175 1 921.9458312988281 921.9458312988281" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Цветной паттерн"><defs><pattern id="repeat-color" patternUnits="userSpaceOnUse" width="1699.1808319091797" height="927.9458312988281"><g transform="translate(-142.5991973876953 -155.48092651367188)"><g class="pattern-fill"><defs>
 <clipPath id="color-clip_1">
 <path transform="matrix(1,0,0,-1,0,1238.91)" d="M0 1238.912H1984.582V0H0Z" />
@@ -1232,7 +1232,7 @@ body.dark{--bg:var(--brand-graphite)}
 <script>
 (()=>{
  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
- const items=[...document.querySelectorAll('.evolution-head,.comparison-toolbar,.comparison,.comparison-help,.change-list article,.evolution-foot,.band-index,.band-specs,.band-controls,.band-print-note,.ls-head,.ls-toolbar,.ls-figure,.ls-measures,.ls-mono-head,.ls-mono-grid,.type-top,.type-lab,.type-weights,.type-glyphs,.type-example,.pattern-intro,.pattern-arrival-hint,.pattern-loop,.pattern-foot,.office-reveal')];
+ const items=[...document.querySelectorAll('.evolution-head,.comparison-toolbar,.comparison,.comparison-help,.change-list article,.evolution-foot,.band-index,.band-specs,.band-controls,.band-print-note,.ls-head,.ls-toolbar,.ls-figure,.ls-measures,.ls-mono-head,.ls-mono-grid,.type-top,.type-lab,.type-weights,.type-glyphs,.type-example,.pattern-description,.pattern-arrival-hint,.pattern-loop,.pattern-foot,.office-reveal')];
  let observer;
  function reveal(el){el.classList.add('is-visible');observer?.unobserve(el)}
  function setup(){
@@ -1307,6 +1307,35 @@ section[id]{scroll-margin-top:100px}
  addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);addEventListener('load',schedule);
  if('ResizeObserver' in window){const resize=new ResizeObserver(schedule);sections.forEach(section=>resize.observe(section))}
  mobile.addEventListener('change',()=>{close();schedule()});update();
+})();
+</script><style>
+/* One-heading mask trial. Text remains readable without JavaScript. */
+#pattern-title .title-mask-window{display:block;overflow:hidden;padding-bottom:.12em;margin-bottom:-.12em;color:inherit}
+#pattern-title .title-mask-window:last-child{color:rgba(255,255,255,.85)}
+#pattern-title .title-mask-line{display:block;color:inherit}
+@media(prefers-reduced-motion:no-preference){
+ #pattern-title.mask-ready .title-mask-line{transform:translateY(115%);transition:transform 1.3s cubic-bezier(.22,1,.36,1)}
+ #pattern-title.mask-ready .title-mask-window:nth-child(2) .title-mask-line{transition-delay:.14s}
+ #pattern-title.mask-ready.mask-visible .title-mask-line{transform:translateY(0)}
+}
+@media(prefers-reduced-motion:reduce){#pattern-title .title-mask-line{transform:none;transition:none}}
+</style>
+<script>
+(()=>{
+ const title=document.getElementById('pattern-title');
+ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+ let observer;
+ function setup(){
+  observer?.disconnect();
+  if(reduced.matches||!('IntersectionObserver' in window)){title.classList.remove('mask-ready');title.classList.add('mask-visible');return}
+  title.classList.add('mask-ready');
+  if(title.classList.contains('mask-visible'))return;
+  observer=new IntersectionObserver(entries=>{
+   if(entries.some(entry=>entry.isIntersecting)){title.classList.add('mask-visible');observer.disconnect()}
+  },{threshold:.15,rootMargin:'0px 0px -8% 0px'});
+  observer.observe(title);
+ }
+ reduced.addEventListener('change',setup);setup();
 })();
 </script></body></html>
 
